@@ -1,46 +1,124 @@
 @import "tailwindcss";
 
-/*
-  Design tokens. Every colour the UI uses comes from here, so a new theme
-  only needs this block changed. Placeholder neutral palette until the
-  final design arrives.
-*/
-:root {
-  --background: #f8fafc;
-  --surface: #ffffff;
-  --foreground: #0f172a;
-  --muted: #475569;
-  --border: #cbd5e1;
-  --primary: #1d4ed8;
-  --primary-foreground: #ffffff;
+/* LifeSync design tokens — "sunlit research desk": warm paper surfaces,
+   graphite controls, one isolated blue for references. */
+@theme {
+  --color-canvas: #fdfcfb;
+  --color-cloud: #f7f7f7;
+  --color-paper: #f0f0ea;
+  --color-board: #eeeded;
+  --color-linen: #e4ded3;
+  --color-graphite: #2e2e2e;
+  --color-graphite-hover: #1f1f1f;
+  --color-charcoal: #454545;
+  --color-quiet: #6a6972;
+  --color-ash: #a8a8a8;
+  --color-research: #207dff;
+  --color-hairline: rgb(0 0 0 / 0.08);
+  --color-tool-border: rgb(0 0 0 / 0.13);
 
-  --risk-critical: #b91c1c;
-  --risk-high: #c2410c;
-  --risk-moderate: #a16207;
-  --risk-low: #15803d;
-  --risk-info: #1d4ed8;
+  /* Risk scale. Always paired with a text label and icon, never colour alone. */
+  --color-critical: #b42318;
+  --color-critical-soft: #fbece9;
+  --color-high: #b54708;
+  --color-high-soft: #fcf0e4;
+  --color-moderate: #866300;
+  --color-moderate-soft: #f7f0db;
+  --color-low: #2f7a4d;
+  --color-low-soft: #e8f2eb;
+  --color-info: #1d6fe0;
+  --color-info-soft: #e9f1fe;
+
+  --text-utility: 12px;
+  --text-utility--line-height: 1.5;
+  --text-seg: 13px;
+  --text-seg--line-height: 1;
+  --text-caption: 14px;
+  --text-caption--line-height: 1.5;
+  --text-body: 16px;
+  --text-body--line-height: 1.5;
+  --text-lead: 18px;
+  --text-lead--line-height: 1.5;
+  --text-card: 20px;
+  --text-card--line-height: 1.5;
+  --text-section: 36px;
+  --text-section--line-height: 1.3;
+  --text-section--letter-spacing: -0.015em;
+  --text-hero: 48px;
+  --text-hero--line-height: 1.3;
+  --text-hero--letter-spacing: -0.033em;
+
+  --radius-badge: 6px;
+  --radius-feature: 8px;
+  --radius-card: 12px;
+
+  --shadow-window: 0 0 4px rgba(0, 0, 0, 0.03), 0 4px 8px rgba(0, 0, 0, 0.04),
+    0 16px 26px rgba(0, 0, 0, 0.05);
+  --shadow-overlay: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 14px 32px rgba(0, 0, 0, 0.1),
+    0 28px 70px rgba(0, 0, 0, 0.14);
+  --shadow-seg: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-ring: 0 0 0 1px rgba(15, 15, 15, 0.1), 0 2px 4px rgba(15, 15, 15, 0.1);
+
+  --animate-rise: rise 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-breathe: breathe 1.6s ease-in-out infinite;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes breathe {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
 }
 
+/* Font variables come from next/font on <html>; Noto families cover every Indic script. */
 @theme inline {
-  --color-background: var(--background);
-  --color-surface: var(--surface);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-border: var(--border);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-risk-critical: var(--risk-critical);
-  --color-risk-high: var(--risk-high);
-  --color-risk-moderate: var(--risk-moderate);
-  --color-risk-low: var(--risk-low);
-  --color-risk-info: var(--risk-info);
-  --font-sans: var(--font-noto-sans), system-ui, sans-serif;
+  --font-sans: var(--font-inter), var(--font-noto-deva), var(--font-noto-beng),
+    var(--font-noto-telu), var(--font-noto-taml), var(--font-noto-gujr), var(--font-noto-arab),
+    var(--font-noto-knda), var(--font-noto-orya), var(--font-noto-mlym), var(--font-noto-guru),
+    ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-instrument), var(--font-noto-deva), var(--font-noto-beng),
+    var(--font-noto-telu), var(--font-noto-taml), var(--font-noto-gujr), var(--font-noto-arab),
+    var(--font-noto-knda), var(--font-noto-orya), var(--font-noto-mlym), var(--font-noto-guru),
+    ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
+@layer base {
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+    scroll-padding-top: 120px;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-graphite);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-research);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: rgb(32 125 255 / 0.16);
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -48,6 +126,36 @@ body {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Print only the health card, as a clean single page. */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+  body {
+    background: #fff;
+  }
+  body * {
+    visibility: hidden;
+  }
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    position: absolute;
+    inset: 0 0 auto 0;
+    box-shadow: none !important;
+    border-color: #ccc !important;
+  }
+  .no-print {
+    display: none !important;
   }
 }
