@@ -10,7 +10,7 @@ beforeEach(() => {
   output = new Blob([new Uint8Array(10)], { type: "image/jpeg" });
   vi.stubGlobal(
     "createImageBitmap",
-    vi.fn(() => Promise.resolve({ width: 4000, height: 3000, close: vi.fn() }))
+    vi.fn(() => Promise.resolve({ width: 4000, height: 3000, close: vi.fn() })),
   );
   vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue({ drawImage } as unknown as CanvasRenderingContext2D);
   vi.spyOn(HTMLCanvasElement.prototype, "toBlob").mockImplementation(function (this: HTMLCanvasElement, cb: BlobCallback) {
@@ -34,7 +34,10 @@ describe("compressImage", () => {
   });
 
   it("never upscales a small photo", async () => {
-    vi.stubGlobal("createImageBitmap", vi.fn(() => Promise.resolve({ width: 800, height: 600, close: vi.fn() })));
+    vi.stubGlobal(
+      "createImageBitmap",
+      vi.fn(() => Promise.resolve({ width: 800, height: 600, close: vi.fn() })),
+    );
     await compressImage(photo());
     expect(drawImage).toHaveBeenCalledWith(expect.anything(), 0, 0, 800, 600);
   });
@@ -50,7 +53,10 @@ describe("compressImage", () => {
     const heic = new File(["x"], "photo.heic", { type: "image/heic" });
     expect(await compressImage(heic)).toBe(heic);
 
-    vi.stubGlobal("createImageBitmap", vi.fn(() => Promise.reject(new Error("decode failed"))));
+    vi.stubGlobal(
+      "createImageBitmap",
+      vi.fn(() => Promise.reject(new Error("decode failed"))),
+    );
     const broken = photo();
     expect(await compressImage(broken)).toBe(broken);
   });

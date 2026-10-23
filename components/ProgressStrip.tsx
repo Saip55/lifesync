@@ -10,9 +10,7 @@ export function ProgressStrip({ stage }: { stage: Stage }) {
   const STAGES = w.stages;
   return (
     <div role="status" aria-live="polite" className="w-full">
-      <span className="sr-only">
-        {fill(w.stepOf, { n: stage + 1, total: STAGES.length, label: STAGES[stage] ?? "" })}
-      </span>
+      <span className="sr-only">{fill(w.stepOf, { n: stage + 1, total: STAGES.length, label: STAGES[stage] ?? "" })}</span>
       <ol className="grid grid-cols-4 gap-2" aria-hidden="true">
         {STAGES.map((label, i) => {
           const done = i < stage;
@@ -26,11 +24,7 @@ export function ProgressStrip({ stage }: { stage: Stage }) {
                   }`}
                 />
               </span>
-              <span
-                className={`flex items-center gap-1.5 text-utility font-medium sm:text-caption ${
-                  done || active ? "text-graphite" : "text-quiet"
-                }`}
-              >
+              <span className={`flex items-center gap-1.5 text-utility font-medium sm:text-caption ${done || active ? "text-graphite" : "text-quiet"}`}>
                 {done && <CheckIcon size={14} className="text-low" />}
                 {label}
               </span>

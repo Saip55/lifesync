@@ -13,8 +13,7 @@ export function ReadAloud({ text, lang }: { text: string; lang: string }) {
   useEffect(() => {
     if (!("speechSynthesis" in window)) return;
     const prefix = lang.toLowerCase().split("-")[0] ?? "";
-    const pick = () =>
-      setVoice(speechSynthesis.getVoices().find((v) => v.lang.toLowerCase().startsWith(prefix)) ?? null);
+    const pick = () => setVoice(speechSynthesis.getVoices().find((v) => v.lang.toLowerCase().startsWith(prefix)) ?? null);
     pick();
     speechSynthesis.addEventListener("voiceschanged", pick);
     return () => {

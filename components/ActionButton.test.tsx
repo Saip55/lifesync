@@ -19,7 +19,7 @@ const renderInList = (a: Action) =>
   render(
     <ol>
       <ActionButton action={a} index={0} />
-    </ol>
+    </ol>,
   );
 
 afterEach(() => vi.restoreAllMocks());

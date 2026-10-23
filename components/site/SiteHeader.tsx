@@ -79,7 +79,7 @@ export function SiteHeader() {
                     onFocus={(e) => setPill({ left: e.currentTarget.offsetLeft, width: e.currentTarget.offsetWidth })}
                     onMouseLeave={() => setPill(null)}
                     onBlur={() => setPill(null)}
-                    className="relative block rounded-full px-3.5 py-1.5 whitespace-nowrap text-[0.875rem] font-medium text-charcoal transition-colors hover:text-graphite"
+                    className="relative block rounded-full px-3.5 py-1.5 text-[0.875rem] font-medium whitespace-nowrap text-charcoal transition-colors hover:text-graphite"
                   >
                     {t.header.nav[l.key]}
                   </Link>
@@ -93,7 +93,7 @@ export function SiteHeader() {
             {!onTry && (
               <Link
                 href="/try"
-                className="group relative hidden h-9 items-center gap-1.5 overflow-hidden rounded-full whitespace-nowrap bg-graphite ps-4 pe-3.5 text-[0.875rem] font-medium text-canvas shadow-[0_1px_0_rgba(255,255,255,0.12)_inset,0_6px_16px_-8px_rgba(46,46,46,0.7)] transition-colors hover:bg-graphite-hover sm:inline-flex"
+                className="group relative hidden h-9 items-center gap-1.5 overflow-hidden rounded-full bg-graphite ps-4 pe-3.5 text-[0.875rem] font-medium whitespace-nowrap text-canvas shadow-[0_1px_0_rgba(255,255,255,0.12)_inset,0_6px_16px_-8px_rgba(46,46,46,0.7)] transition-colors hover:bg-graphite-hover sm:inline-flex"
               >
                 <span
                   aria-hidden="true"

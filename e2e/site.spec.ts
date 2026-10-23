@@ -130,7 +130,10 @@ test.describe("API", () => {
   });
 
   test("refuses requests from other websites", async ({ request }) => {
-    const res = await request.post("/api/analyze", { multipart: { text: "hello" }, headers: { origin: "https://evil.example", "sec-fetch-site": "cross-site" } });
+    const res = await request.post("/api/analyze", {
+      multipart: { text: "hello" },
+      headers: { origin: "https://evil.example", "sec-fetch-site": "cross-site" },
+    });
     expect(res.status()).toBe(403);
   });
 

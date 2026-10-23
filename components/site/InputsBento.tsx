@@ -10,14 +10,7 @@ export function InputsBento() {
   const i = useLanguage().t.inputs;
   return (
     <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6 lg:gap-4">
-      <Tile
-        className="bg-peach sm:col-span-2 lg:col-span-4"
-        ink="text-peach-ink"
-        Icon={MicIcon}
-        title={i.voiceTitle}
-        body={i.voiceBody}
-        delay={0}
-      >
+      <Tile className="bg-peach sm:col-span-2 lg:col-span-4" ink="text-peach-ink" Icon={MicIcon} title={i.voiceTitle} body={i.voiceBody} delay={0}>
         <div className="rounded-card bg-canvas/80 p-4">
           <div className="flex h-12 items-center justify-between" aria-hidden="true">
             {WAVE.map((h, i) => (
@@ -31,14 +24,7 @@ export function InputsBento() {
         </div>
       </Tile>
 
-      <Tile
-        className="bg-sage lg:col-span-2 lg:row-span-2"
-        ink="text-sage-ink"
-        Icon={ImageIcon}
-        title={i.photosTitle}
-        body={i.photosBody}
-        delay={80}
-      >
+      <Tile className="bg-sage lg:col-span-2 lg:row-span-2" ink="text-sage-ink" Icon={ImageIcon} title={i.photosTitle} body={i.photosBody} delay={80}>
         <div className="relative mx-auto w-full max-w-[280px] pt-16 lg:pt-24" aria-hidden="true">
           {/* Medicine strip behind the prescription */}
           <div className="absolute end-0 top-0 grid w-[62%] grid-cols-4 gap-2 rounded-[10px] bg-[#d9ded6] p-3 shadow-window">
@@ -62,14 +48,7 @@ export function InputsBento() {
         </div>
       </Tile>
 
-      <Tile
-        className="bg-lilac lg:col-span-2"
-        ink="text-lilac-ink"
-        Icon={MessageIcon}
-        title={i.forwardsTitle}
-        body={i.forwardsBody}
-        delay={0}
-      >
+      <Tile className="bg-lilac lg:col-span-2" ink="text-lilac-ink" Icon={MessageIcon} title={i.forwardsTitle} body={i.forwardsBody} delay={0}>
         <div className="rounded-card rounded-ss-[4px] bg-canvas/85 p-3" aria-hidden="true">
           <p className="text-utility text-quiet italic">{i.forwardsLabel}</p>
           <p className="mt-1 text-caption text-graphite">{i.forwardsText}</p>
@@ -79,14 +58,7 @@ export function InputsBento() {
         </div>
       </Tile>
 
-      <Tile
-        className="bg-sand lg:col-span-2"
-        ink="text-sand-ink"
-        Icon={FileIcon}
-        title={i.docsTitle}
-        body={i.docsBody}
-        delay={80}
-      >
+      <Tile className="bg-sand lg:col-span-2" ink="text-sand-ink" Icon={FileIcon} title={i.docsTitle} body={i.docsBody} delay={80}>
         <ul className="flex flex-wrap gap-1.5" aria-hidden="true">
           {i.docsChips.map((t) => (
             <li key={t} className="rounded-badge bg-canvas/85 px-2 py-1 text-utility font-medium text-graphite">
@@ -96,14 +68,7 @@ export function InputsBento() {
         </ul>
       </Tile>
 
-      <Tile
-        className="bg-sky lg:col-span-3"
-        ink="text-sky-ink"
-        Icon={CloudRainIcon}
-        title={i.weatherTitle}
-        body={i.weatherBody}
-        delay={0}
-      >
+      <Tile className="bg-sky lg:col-span-3" ink="text-sky-ink" Icon={CloudRainIcon} title={i.weatherTitle} body={i.weatherBody} delay={0}>
         <div className="flex items-end gap-4 rounded-card bg-canvas/80 p-4" aria-hidden="true">
           <div className="min-w-0 flex-1">
             <p className="text-caption font-semibold text-graphite">{i.weatherNow}</p>
@@ -117,14 +82,7 @@ export function InputsBento() {
         </div>
       </Tile>
 
-      <Tile
-        className="border border-linen bg-canvas lg:col-span-3"
-        ink="text-graphite"
-        Icon={NewsIcon}
-        title={i.newsTitle}
-        body={i.newsBody}
-        delay={80}
-      >
+      <Tile className="border border-linen bg-canvas lg:col-span-3" ink="text-graphite" Icon={NewsIcon} title={i.newsTitle} body={i.newsBody} delay={80}>
         <ul className="divide-y divide-hairline rounded-card bg-cloud px-4" aria-hidden="true">
           <li className="flex items-center justify-between gap-3 py-2.5">
             <span className="text-caption text-graphite">{i.newsA}</span>
@@ -164,7 +122,9 @@ function Tile({
   children: ReactNode;
 }) {
   return (
-    <li className={`overflow-hidden rounded-[18px] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.2,0.7,0.2,1)] hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(0,0,0,0.25)] ${className}`}>
+    <li
+      className={`overflow-hidden rounded-[18px] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.2,0.7,0.2,1)] hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(0,0,0,0.25)] ${className}`}
+    >
       <Reveal delay={delay} className="flex h-full flex-col gap-5 p-5 sm:p-6">
         <div>
           <Icon size={22} className={ink} />

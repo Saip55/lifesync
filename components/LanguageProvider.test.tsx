@@ -16,7 +16,7 @@ const app = () =>
     <LanguageProvider>
       <LanguageSwitcher />
       <Probe />
-    </LanguageProvider>
+    </LanguageProvider>,
   );
 
 beforeEach(() => {

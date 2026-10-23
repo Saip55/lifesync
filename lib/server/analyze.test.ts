@@ -27,7 +27,11 @@ const card: ActionCard = {
 
 const input: AnalyzeInput = { text: "All ATMs will shut for 7 days!", audio: null, files: [], docs: [], lat: null, lon: null, replyLanguage: null };
 
-const WEATHER = { current: { temperature_2m: 30 }, hourly: { time: [], precipitation_probability: [], precipitation: [] }, daily: { precipitation_sum: [0, 0] } };
+const WEATHER = {
+  current: { temperature_2m: 30 },
+  hourly: { time: [], precipitation_probability: [], precipitation: [] },
+  daily: { precipitation_sum: [0, 0] },
+};
 const NEWS = "<rss><item><title>RBI denies ATM shutdown - PTI</title><source>PTI</source><link>https://x</link><pubDate>today</pubDate></item></rss>";
 
 // Live signals: weather and news both answer quickly.
@@ -98,7 +102,10 @@ describe("analyze", () => {
   });
 
   it("still answers when live signals fail", async () => {
-    vi.stubGlobal("fetch", vi.fn(() => Promise.reject(new Error("offline"))));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => Promise.reject(new Error("offline"))),
+    );
     const result = await analyze(input, () => {});
     expect(result.signals.find((s) => s.key === "weather")?.value).toBe("Not available (unavailable)");
     expect(result.signals.find((s) => s.key === "news")?.value).toBe("Not available (unavailable)");
@@ -120,9 +127,7 @@ describe("analyze", () => {
     let release: (r: Response) => void = () => {};
     vi.stubGlobal(
       "fetch",
-      vi.fn((url: string | URL) =>
-        String(url).includes("open-meteo") ? new Promise<Response>((r) => (release = r)) : Promise.resolve(new Response(NEWS))
-      )
+      vi.fn((url: string | URL) => (String(url).includes("open-meteo") ? new Promise<Response>((r) => (release = r)) : Promise.resolve(new Response(NEWS)))),
     );
     const running = analyze({ ...input, lat: 18.52, lon: 73.85 }, () => {});
     await vi.advanceTimersByTimeAsync(2_000);
@@ -141,14 +146,19 @@ describe("analyze", () => {
     fetchMock.mockImplementation((url: string | URL) => {
       const u = String(url);
       if (u.includes("places.googleapis")) {
-        return Promise.resolve(Response.json({ places: [{ displayName: { text: "City Hospital" }, formattedAddress: "MG Road", location: { latitude: 1, longitude: 2 } }] }));
+        return Promise.resolve(
+          Response.json({ places: [{ displayName: { text: "City Hospital" }, formattedAddress: "MG Road", location: { latitude: 1, longitude: 2 } }] }),
+        );
       }
-      if (u.includes("routes.googleapis")) return Promise.resolve(Response.json({ routes: [{ duration: "720s", staticDuration: "540s", distanceMeters: 4200 }] }));
+      if (u.includes("routes.googleapis"))
+        return Promise.resolve(Response.json({ routes: [{ duration: "720s", staticDuration: "540s", distanceMeters: 4200 }] }));
       return liveData(url);
     });
 
     const withLocation = await analyze({ ...input, lat: 18.5, lon: 73.8 }, () => {});
-    expect(withLocation.signals.find((s) => s.key === "traffic")?.value).toBe("City Hospital, MG Road: 4.2 km, about 12 min with current traffic (9 min without).");
+    expect(withLocation.signals.find((s) => s.key === "traffic")?.value).toBe(
+      "City Hospital, MG Road: 4.2 km, about 12 min with current traffic (9 min without).",
+    );
     expect(JSON.stringify(gemini.generateGrounded.mock.calls[0])).toContain("City Hospital");
 
     const withoutLocation = await analyze(input, () => {});
@@ -167,7 +177,7 @@ describe("analyze", () => {
         ],
         docs: [{ name: "d.txt", text: "notes" }],
       },
-      () => {}
+      () => {},
     );
     expect(result.signals.find((s) => s.key === "inputs")?.value).toBe("Text, 2 photos, 2 documents, Voice note");
     const parts = gemini.generateJson.mock.calls[0]?.[0].parts as unknown[];

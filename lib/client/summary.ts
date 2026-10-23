@@ -9,15 +9,15 @@ export function planText({ card, verified }: AnalyzeResult, t: Dict["card"]): st
     "",
     ...section(
       t.doNow,
-      card.actions.map((a, i) => `${i + 1}. ${a.title}${a.payload.phone ? ` (${a.payload.phone})` : ""}${a.detail ? ` — ${a.detail}` : ""}`)
+      card.actions.map((a, i) => `${i + 1}. ${a.title}${a.payload.phone ? ` (${a.payload.phone})` : ""}${a.detail ? ` — ${a.detail}` : ""}`),
     ),
     ...section(
       t.contacts,
-      card.contacts.map((c) => `• ${c.name}: ${c.number}`)
+      card.contacts.map((c) => `• ${c.name}: ${c.number}`),
     ),
     ...section(
       t.couldnt,
-      card.couldnt_verify.map((x) => `• ${x}`)
+      card.couldnt_verify.map((x) => `• ${x}`),
     ),
     `${t.confidence}: ${card.confidence}% · ${verified ? t.factChecked : t.notVerified}`,
     t.shareFooter,

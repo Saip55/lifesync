@@ -5,12 +5,7 @@ export function Landscape() {
   // Unique ids: the landscape appears more than once on the page.
   const id = useId();
   return (
-    <svg
-      className="absolute inset-0 size-full"
-      viewBox="0 0 1200 800"
-      preserveAspectRatio="xMidYMid slice"
-      aria-hidden="true"
-    >
+    <svg className="absolute inset-0 size-full" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <defs>
         <linearGradient id={`${id}sky`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#dde7ea" />

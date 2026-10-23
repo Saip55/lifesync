@@ -9,18 +9,7 @@ import { ActionButton } from "./ActionButton";
 import { HealthCard } from "./HealthCard";
 import { ReadAloud } from "./ReadAloud";
 import { useLanguage } from "./LanguageProvider";
-import {
-  AlertIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  CopyIcon,
-  ExternalIcon,
-  MessageIcon,
-  PhoneIcon,
-  QuestionIcon,
-  ShieldIcon,
-  XIcon,
-} from "./Icons";
+import { AlertIcon, CheckIcon, ChevronDownIcon, CopyIcon, ExternalIcon, MessageIcon, PhoneIcon, QuestionIcon, ShieldIcon, XIcon } from "./Icons";
 
 const FACT_CHIP: Record<Fact["status"], { className: string; Icon: typeof CheckIcon }> = {
   verified: { className: "bg-low-soft text-low", Icon: CheckIcon },

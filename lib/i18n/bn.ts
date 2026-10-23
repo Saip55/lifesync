@@ -44,7 +44,7 @@ export const bn: Dict = {
   },
   proof: {
     factChecked: "Google Search দিয়ে তথ্য যাচাই",
-    languages: "6টি ভারতীয় ভাষা",
+    languages: "১২টি ভারতীয় ভাষায় উত্তর",
     private: "লগইন নেই, কিছুই সংরক্ষিত হয় না",
   },
   inputs: {

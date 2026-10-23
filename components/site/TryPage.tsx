@@ -55,7 +55,10 @@ export function TryPage() {
                     <Icon size={17} />
                   </span>
                   {i < p.flow.length - 1 && (
-                    <span aria-hidden="true" className="absolute start-10 end-2 top-5 hidden h-px bg-gradient-to-r from-graphite/25 to-transparent sm:block rtl:bg-gradient-to-l" />
+                    <span
+                      aria-hidden="true"
+                      className="absolute start-10 end-2 top-5 hidden h-px bg-gradient-to-r from-graphite/25 to-transparent sm:block rtl:bg-gradient-to-l"
+                    />
                   )}
                   <span>
                     <span className="block text-caption font-semibold text-graphite">
@@ -84,7 +87,9 @@ export function TryPage() {
             const urgent = i === p.faq.length - 1;
             return (
               <Reveal key={f.q} delay={i * 90} className="h-full">
-                <div className={`flex h-full flex-col rounded-[18px] border p-5 transition-[transform,box-shadow] duration-500 hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(0,0,0,0.25)] ${urgent ? "border-critical/15 bg-critical-soft/60" : i === 0 ? "border-sage bg-sage/50" : "border-sky bg-sky/50"}`}>
+                <div
+                  className={`flex h-full flex-col rounded-[18px] border p-5 transition-[transform,box-shadow] duration-500 hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(0,0,0,0.25)] ${urgent ? "border-critical/15 bg-critical-soft/60" : i === 0 ? "border-sage bg-sage/50" : "border-sky bg-sky/50"}`}
+                >
                   <Icon size={18} className={urgent ? "text-critical" : i === 0 ? "text-sage-ink" : "text-sky-ink"} />
                   <h3 className="mt-4 text-body font-semibold text-graphite">{f.q}</h3>
                   <p className="mt-1.5 text-caption text-charcoal">{f.a}</p>

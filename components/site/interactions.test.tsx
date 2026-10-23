@@ -26,13 +26,13 @@ describe("Reveal", () => {
         }
         unobserve() {}
         disconnect() {}
-      }
+      },
     );
     render(
       <>
         <Reveal>First</Reveal>
         <Reveal delay={90}>Second</Reveal>
-      </>
+      </>,
     );
     const first = screen.getByText("First");
     expect(observed).toHaveLength(2);

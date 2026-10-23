@@ -15,7 +15,7 @@ function observer() {
         io.unobserve(entry.target);
       }
     },
-    { rootMargin: "0px 0px -12% 0px" }
+    { rootMargin: "0px 0px -12% 0px" },
   );
   return shared;
 }

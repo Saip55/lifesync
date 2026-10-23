@@ -36,20 +36,17 @@ const orya = Noto_Sans_Oriya({ variable: "--font-noto-orya", subsets: ["oriya"],
 const mlym = Noto_Sans_Malayalam({ variable: "--font-noto-mlym", subsets: ["malayalam"], weight: ["400", "500", "600"], preload: false });
 const guru = Noto_Sans_Gurmukhi({ variable: "--font-noto-guru", subsets: ["gurmukhi"], weight: ["400", "500", "600"], preload: false });
 
-const fontVars = [inter, display, deva, beng, telu, taml, gujr, arab, knda, orya, mlym, guru]
-  .map((f) => f.variable)
-  .join(" ");
+const fontVars = [inter, display, deva, beng, telu, taml, gujr, arab, knda, orya, mlym, guru].map((f) => f.variable).join(" ");
 
 // Runs before first paint: if a non-English language was saved, hide the page until
 // LanguageProvider has swapped the text in. The timeout is a safety net if hydration fails.
 const LANG_SCRIPT = `try{var l=localStorage.getItem(${JSON.stringify(LANG_STORAGE_KEY)});if(l&&l!=="en"&&${JSON.stringify(
-  SITE_LANGUAGES.map((x) => x.code)
+  SITE_LANGUAGES.map((x) => x.code),
 )}.indexOf(l)>-1){var d=document.documentElement;d.lang=l;d.setAttribute("data-lang-pending","");setTimeout(function(){d.removeAttribute("data-lang-pending")},1500)}}catch(e){}`;
 
 export const metadata: Metadata = {
   title: "LifeSync — from a messy moment to the next right step",
-  description:
-    "Turn voice notes, photos, documents and forwards into a fact-checked action card in your own Indian language.",
+  description: "Turn voice notes, photos, documents and forwards into a fact-checked action card in your own Indian language.",
 };
 
 export const viewport: Viewport = {

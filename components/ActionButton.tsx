@@ -49,21 +49,13 @@ export function ActionButton({ action, index }: { action: Action; index: number 
 
   const body = (
     <>
-      <span
-        className={`grid size-10 shrink-0 place-items-center rounded-full ${
-          isNow ? "bg-graphite text-canvas" : "bg-paper text-graphite"
-        }`}
-      >
+      <span className={`grid size-10 shrink-0 place-items-center rounded-full ${isNow ? "bg-graphite text-canvas" : "bg-paper text-graphite"}`}>
         <Glyph size={18} />
       </span>
       <span className="min-w-0 flex-1 text-start">
         <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <span className="text-body font-semibold text-graphite">{action.title}</span>
-          <span
-            className={`rounded-badge px-1.5 py-0.5 text-utility font-medium ${
-              isNow ? "bg-graphite/90 text-canvas" : "border border-linen text-quiet"
-            }`}
-          >
+          <span className={`rounded-badge px-1.5 py-0.5 text-utility font-medium ${isNow ? "bg-graphite/90 text-canvas" : "border border-linen text-quiet"}`}>
             {c.urgency[action.urgency]}
           </span>
         </span>
@@ -76,10 +68,7 @@ export function ActionButton({ action, index }: { action: Action; index: number 
   const rowClass = "flex w-full items-center gap-3 rounded-card p-3 sm:gap-4 sm:p-4";
 
   return (
-    <li
-      className="animate-rise overflow-hidden rounded-card border border-hairline bg-canvas"
-      style={{ animationDelay: `${index * 60}ms` }}
-    >
+    <li className="animate-rise overflow-hidden rounded-card border border-hairline bg-canvas" style={{ animationDelay: `${index * 60}ms` }}>
       {isInfo ? (
         <div className={rowClass}>{body}</div>
       ) : (
@@ -99,9 +88,7 @@ export function ActionButton({ action, index }: { action: Action; index: number 
         <div id={panelId} className="border-t border-hairline bg-cloud px-4 py-4 sm:ps-[72px]" role="group" aria-label={c.confirmGroup}>
           <p className="text-caption text-charcoal">{prompt}</p>
           {action.type === "message" && action.payload.message && (
-            <p className="mt-2 rounded-badge border border-linen bg-canvas p-3 text-caption text-graphite">
-              {action.payload.message}
-            </p>
+            <p className="mt-2 rounded-badge border border-linen bg-canvas p-3 text-caption text-graphite">{action.payload.message}</p>
           )}
           <div className="mt-3 flex flex-wrap gap-2">
             <button

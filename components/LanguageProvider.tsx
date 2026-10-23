@@ -57,7 +57,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         // Not saved, but the switch still applies for this visit.
       }
     },
-    [apply]
+    [apply],
   );
 
   return <LanguageContext.Provider value={{ lang: state.lang, setLang, t: state.t }}>{children}</LanguageContext.Provider>;

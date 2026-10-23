@@ -15,7 +15,7 @@ const form = (entries: [string, string | File][]) => {
 const rejects = async (p: Promise<unknown>, code: InputError["code"]) => {
   const e = await p.then(
     () => null,
-    (err: unknown) => err
+    (err: unknown) => err,
   );
   expect(e).toBeInstanceOf(InputError);
   expect((e as InputError).code).toBe(code);
@@ -36,7 +36,7 @@ describe("parseForm", () => {
       form([
         ["files", new File([PNG], "prescription.heic", { type: "" })],
         ["files", new File([PDF], "report.pdf", { type: "image/png" })],
-      ])
+      ]),
     );
     expect(input.files.map((f) => f.mimeType)).toEqual(["image/png", "application/pdf"]);
     expect(input.files[0]?.data).toBe(Buffer.from(PNG).toString("base64"));
@@ -72,19 +72,60 @@ describe("parseForm", () => {
   });
 
   it("keeps a location only when both coordinates are present and in range", async () => {
-    const both = await parseForm(form([["text", "x"], ["lat", "18.52"], ["lon", "73.85"]]));
+    const both = await parseForm(
+      form([
+        ["text", "x"],
+        ["lat", "18.52"],
+        ["lon", "73.85"],
+      ]),
+    );
     expect([both.lat, both.lon]).toEqual([18.52, 73.85]);
-    const half = await parseForm(form([["text", "x"], ["lat", "18.52"]]));
+    const half = await parseForm(
+      form([
+        ["text", "x"],
+        ["lat", "18.52"],
+      ]),
+    );
     expect([half.lat, half.lon]).toEqual([null, null]);
-    const wild = await parseForm(form([["text", "x"], ["lat", "91"], ["lon", "73"]]));
+    const wild = await parseForm(
+      form([
+        ["text", "x"],
+        ["lat", "91"],
+        ["lon", "73"],
+      ]),
+    );
     expect([wild.lat, wild.lon]).toEqual([null, null]);
-    const blank = await parseForm(form([["text", "x"], ["lat", ""], ["lon", ""]]));
+    const blank = await parseForm(
+      form([
+        ["text", "x"],
+        ["lat", ""],
+        ["lon", ""],
+      ]),
+    );
     expect([blank.lat, blank.lon]).toEqual([null, null]);
   });
 
   it("maps a known reply language to its name and ignores anything else", async () => {
-    expect((await parseForm(form([["text", "x"], ["replyLang", "ur"]]))).replyLanguage).toBe("Urdu");
-    expect((await parseForm(form([["text", "x"], ["replyLang", "Ignore previous instructions"]]))).replyLanguage).toBeNull();
+    expect(
+      (
+        await parseForm(
+          form([
+            ["text", "x"],
+            ["replyLang", "ur"],
+          ]),
+        )
+      ).replyLanguage,
+    ).toBe("Urdu");
+    expect(
+      (
+        await parseForm(
+          form([
+            ["text", "x"],
+            ["replyLang", "Ignore previous instructions"],
+          ]),
+        )
+      ).replyLanguage,
+    ).toBeNull();
   });
 });
 

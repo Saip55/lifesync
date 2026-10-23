@@ -2,13 +2,23 @@
   "name": "lifesync",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.9"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "check": "npm run lint && npm run typecheck && npm run format:check && npm run test:coverage",
+    "prepare": "simple-git-hooks"
   },
   "dependencies": {
     "@google/genai": "2.31.0",
@@ -47,5 +57,15 @@
     "typescript": "5.9.3",
     "vite-tsconfig-paths": "6.1.1",
     "vitest": "5.0.5"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,mts,mjs}": [
+      "eslint --max-warnings=0 --fix",
+      "prettier --write"
+    ],
+    "*.{css,json,md,yml}": "prettier --write"
   }
 }

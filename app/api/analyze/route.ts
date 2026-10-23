@@ -51,7 +51,7 @@ export async function POST(req: Request) {
   if (!rate.ok) {
     return fail(
       { type: "error", code: "rate_limited", message: "Too many requests at once. Please wait a minute and try again." },
-      { "Retry-After": String(rate.retryAfterSeconds) }
+      { "Retry-After": String(rate.retryAfterSeconds) },
     );
   }
 

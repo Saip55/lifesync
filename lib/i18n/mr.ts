@@ -44,7 +44,7 @@ export const mr: Dict = {
   },
   proof: {
     factChecked: "Google Search ने तथ्य-तपासणी",
-    languages: "6 भारतीय भाषा",
+    languages: "12 भारतीय भाषांमध्ये उत्तर",
     private: "लॉगिन नाही, काहीही साठवले जात नाही",
   },
   inputs: {

@@ -1,15 +1,7 @@
 import "server-only";
 import type { Part } from "@google/genai";
 import { z } from "zod";
-import {
-  CriticOutputSchema,
-  PlanOutputSchema,
-  type ActionCard,
-  type AnalyzeResult,
-  type Signal,
-  type Source,
-  type StreamEvent,
-} from "@/lib/schema";
+import { CriticOutputSchema, PlanOutputSchema, type ActionCard, type AnalyzeResult, type Signal, type Source, type StreamEvent } from "@/lib/schema";
 import { LANGUAGES } from "@/lib/languages";
 import { env } from "./env";
 import { extractJson, generateGrounded, generateJson } from "./gemini";
@@ -184,9 +176,23 @@ export async function analyze(input: AnalyzeInput, emit: (e: StreamEvent) => voi
     { key: "weather", value: weather.ok ? weather.value.summary : `Not available (${weather.reason})` },
     {
       key: "news",
-      value: news.ok ? (news.value.length ? news.value.slice(0, 3).map((n) => `${n.title} (${n.source})`).join(" · ") : "No recent reports found") : `Not available (${news.reason})`,
+      value: news.ok
+        ? news.value.length
+          ? news.value
+              .slice(0, 3)
+              .map((n) => `${n.title} (${n.source})`)
+              .join(" · ")
+          : "No recent reports found"
+        : `Not available (${news.reason})`,
     },
-    ...(traffic ? [{ key: "traffic" as const, value: trafficValue ? describeTraffic(trafficValue) : traffic.ok ? "No nearby place found" : `Not available (${traffic.reason})` }] : []),
+    ...(traffic
+      ? [
+          {
+            key: "traffic" as const,
+            value: trafficValue ? describeTraffic(trafficValue) : traffic.ok ? "No nearby place found" : `Not available (${traffic.reason})`,
+          },
+        ]
+      : []),
     { key: "language", value: LANGUAGES.find((l) => l.code === safe.language_code.split("-")[0])?.english ?? safe.language_code },
     { key: "inputs", value: describeInputs(input) },
     { key: "timing", value: `Plan ${(planMs / 1000).toFixed(1)} s, fact-check ${(criticMs / 1000).toFixed(1)} s` },

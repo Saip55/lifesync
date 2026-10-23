@@ -33,7 +33,10 @@ export async function fetchWeather(lat: number | null, lon: number | null, signa
 export function summarizeWeather(w: OpenMeteo, place: string, now = new Date()) {
   const times = w.hourly?.time ?? [];
   // Open-Meteo hours are local "YYYY-MM-DDTHH:00"; start from the hour we are in now.
-  const from = Math.max(0, times.findIndex((t) => new Date(t).getTime() + 3_600_000 > now.getTime()));
+  const from = Math.max(
+    0,
+    times.findIndex((t) => new Date(t).getTime() + 3_600_000 > now.getTime()),
+  );
   const next12 = (arr: (number | null)[] | undefined) => (arr ?? []).slice(from, from + 12).map((v) => v ?? 0);
   const rainChance = Math.max(0, ...next12(w.hourly?.precipitation_probability));
   const rainMm = next12(w.hourly?.precipitation).reduce((a, b) => a + b, 0);
@@ -41,7 +44,9 @@ export function summarizeWeather(w: OpenMeteo, place: string, now = new Date()) 
   const c = w.current ?? {};
   return [
     `Place: ${place}.`,
-    c.temperature_2m !== undefined ? `Now ${Math.round(c.temperature_2m)}°C, wind ${Math.round(c.wind_speed_10m ?? 0)} km/h, rain ${c.precipitation ?? 0} mm.` : "",
+    c.temperature_2m !== undefined
+      ? `Now ${Math.round(c.temperature_2m)}°C, wind ${Math.round(c.wind_speed_10m ?? 0)} km/h, rain ${c.precipitation ?? 0} mm.`
+      : "",
     `Next 12 h: up to ${rainChance}% chance of rain, about ${rainMm.toFixed(1)} mm.`,
     `Rain today ${today.toFixed(1)} mm, tomorrow ${tomorrow.toFixed(1)} mm.`,
   ]

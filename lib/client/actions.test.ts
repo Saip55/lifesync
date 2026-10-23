@@ -45,13 +45,13 @@ describe("foldIcsLine", () => {
 
   it("keeps every line within 75 octets and never splits a character", () => {
     fc.assert(
-      fc.property(fc.string({ unit: fc.constantFrom("a", "ब", "த", "😀", " ", ",") , maxLength: 300 }), (text) => {
+      fc.property(fc.string({ unit: fc.constantFrom("a", "ब", "த", "😀", " ", ","), maxLength: 300 }), (text) => {
         const folded = foldIcsLine(`DESCRIPTION:${text}`);
         const lines = folded.split("\r\n");
         lines.forEach((l) => expect(octets(l)).toBeLessThanOrEqual(75));
         lines.slice(1).forEach((l) => expect(l.startsWith(" ")).toBe(true));
         expect(lines.map((l, i) => (i ? l.slice(1) : l)).join("")).toBe(`DESCRIPTION:${text}`);
-      })
+      }),
     );
   });
 });

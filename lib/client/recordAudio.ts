@@ -60,7 +60,7 @@ export function useRecorder(onDone: (note: VoiceNote) => void, onError: () => vo
       if (timerRef.current) clearInterval(timerRef.current);
       recorderRef.current?.stream.getTracks().forEach((t) => t.stop());
     },
-    []
+    [],
   );
 
   return { recording, seconds, toggle: () => (recording ? stop() : void start()) };

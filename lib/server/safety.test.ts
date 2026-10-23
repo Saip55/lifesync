@@ -23,7 +23,15 @@ const baseCard = (over: Partial<ActionCard> = {}): ActionCard => ({
   ...over,
 });
 
-const action = (over: Partial<Action>): Action => ({ title: "Do it", detail: "", urgency: "now", type: "info", payload: {}, needs_confirmation: false, ...over });
+const action = (over: Partial<Action>): Action => ({
+  title: "Do it",
+  detail: "",
+  urgency: "now",
+  type: "info",
+  payload: {},
+  needs_confirmation: false,
+  ...over,
+});
 
 const FIXED = new Set<string>(EMERGENCY_NUMBERS.map((e) => e.number));
 const digits = (s: string) => s.replace(/\D/g, "");
@@ -100,9 +108,12 @@ describe("enforceSafety", () => {
     const card = enforceSafety(
       baseCard({
         risk_level: "critical",
-        actions: [action({ title: "Pack documents", urgency: "today" }), action({ title: "Call ambulance", type: "call", payload: { phone: "108" }, needs_confirmation: true })],
+        actions: [
+          action({ title: "Pack documents", urgency: "today" }),
+          action({ title: "Call ambulance", type: "call", payload: { phone: "108" }, needs_confirmation: true }),
+        ],
       }),
-      { verified: true }
+      { verified: true },
     );
     expect(card.actions.map((a) => a.payload.phone)).toEqual(["108", undefined]);
   });
@@ -122,7 +133,7 @@ describe("enforceSafety", () => {
           action({ title: "Open map", type: "navigate", payload: { destination: "X" } }),
         ],
       }),
-      { verified: true }
+      { verified: true },
     );
     expect(card.actions.map((a) => a.needs_confirmation)).toEqual([true, false]);
   });
@@ -141,7 +152,7 @@ describe("enforceSafety", () => {
           action({ title: "Go to hospital", type: "navigate" }),
         ],
       }),
-      { verified: true }
+      { verified: true },
     );
     expect(card.actions.map((a) => [a.type, a.needs_confirmation])).toEqual([
       ["info", false],
@@ -158,7 +169,7 @@ describe("enforceSafety", () => {
           { name: "Dr. Mehta", number: "+91 (98200) 00000 ext", why: "Family doctor" },
         ],
       }),
-      { verified: true }
+      { verified: true },
     );
     expect(card.contacts).toEqual([{ name: "Dr. Mehta", number: "+91 98200 00000", why: "Family doctor" }]);
   });
@@ -171,7 +182,7 @@ describe("enforceSafety", () => {
   it("bounds runaway model output and invalid language codes", () => {
     const card = enforceSafety(
       baseCard({ situation: "x".repeat(5_000), couldnt_verify: Array.from({ length: 50 }, (_, i) => `item ${i}`), language_code: '"><script>' }),
-      { verified: true }
+      { verified: true },
     );
     expect(card.situation.length).toBeLessThanOrEqual(1_000);
     expect(card.couldnt_verify).toHaveLength(12);
@@ -187,13 +198,22 @@ describe("enforceSafety", () => {
 
 // Any card the model could return, valid under the schema.
 const text = fc.string({ maxLength: 40 });
-const phone = fc.oneof(fc.constant(""), fc.constantFrom("108", "112", "911", "999", "+91 98200 00000", "1800-123-4567", "*#06#", "abc"), fc.string({ maxLength: 15 }));
+const phone = fc.oneof(
+  fc.constant(""),
+  fc.constantFrom("108", "112", "911", "999", "+91 98200 00000", "1800-123-4567", "*#06#", "abc"),
+  fc.string({ maxLength: 15 }),
+);
 const arbAction = fc.record({
   title: fc.oneof(text, fc.constantFrom("Call an ambulance", "Call police", "Call Dr. Mehta", "पुलिस को कॉल करें")),
   detail: text,
   urgency: fc.constantFrom(...URGENCIES),
   type: fc.constantFrom(...ACTION_TYPES),
-  payload: fc.record({ phone, message: fc.option(text, { nil: undefined }), time_iso: fc.option(text, { nil: undefined }), destination: fc.option(text, { nil: undefined }) }),
+  payload: fc.record({
+    phone,
+    message: fc.option(text, { nil: undefined }),
+    time_iso: fc.option(text, { nil: undefined }),
+    destination: fc.option(text, { nil: undefined }),
+  }),
   needs_confirmation: fc.boolean(),
 });
 const arbCard: fc.Arbitrary<ActionCard> = fc.record({
@@ -204,7 +224,9 @@ const arbCard: fc.Arbitrary<ActionCard> = fc.record({
   risk_reason: text,
   verified_facts: fc.array(fc.record({ claim: text, source: text, status: fc.constantFrom(...FACT_STATUSES) }), { maxLength: 4 }),
   actions: fc.array(arbAction, { maxLength: 10 }),
-  contacts: fc.array(fc.record({ name: fc.oneof(text, fc.constantFrom("Ambulance", "Fire brigade", "Neighbour")), number: phone, why: text }), { maxLength: 8 }),
+  contacts: fc.array(fc.record({ name: fc.oneof(text, fc.constantFrom("Ambulance", "Fire brigade", "Neighbour")), number: phone, why: text }), {
+    maxLength: 8,
+  }),
   health_card: fc.constant(null),
   rumor_verdict: fc.option(fc.record({ verdict: fc.constantFrom(...VERDICTS), correction: text }), { nil: null }),
   confidence: fc.double({ min: -50, max: 500, noNaN: true }),
@@ -246,7 +268,7 @@ describe("enforceSafety invariants (property-based)", () => {
         }
         expect(card.language_code).toMatch(/^[a-z]{2,3}(-[a-z0-9]{2,8}){0,3}$/i);
       }),
-      { numRuns: 400 }
+      { numRuns: 400 },
     );
   });
 
@@ -256,7 +278,7 @@ describe("enforceSafety invariants (property-based)", () => {
         const once = enforceSafety(input, { verified });
         expect(enforceSafety(once, { verified })).toEqual(once);
       }),
-      { numRuns: 200 }
+      { numRuns: 200 },
     );
   });
 });

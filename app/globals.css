@@ -73,10 +73,8 @@
   --radius-feature: 8px;
   --radius-card: 12px;
 
-  --shadow-window: 0 0 4px rgba(0, 0, 0, 0.03), 0 4px 8px rgba(0, 0, 0, 0.04),
-    0 16px 26px rgba(0, 0, 0, 0.05);
-  --shadow-overlay: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 14px 32px rgba(0, 0, 0, 0.1),
-    0 28px 70px rgba(0, 0, 0, 0.14);
+  --shadow-window: 0 0 4px rgba(0, 0, 0, 0.03), 0 4px 8px rgba(0, 0, 0, 0.04), 0 16px 26px rgba(0, 0, 0, 0.05);
+  --shadow-overlay: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 14px 32px rgba(0, 0, 0, 0.1), 0 28px 70px rgba(0, 0, 0, 0.14);
   --shadow-seg: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-ring: 0 0 0 1px rgba(15, 15, 15, 0.1), 0 2px 4px rgba(15, 15, 15, 0.1);
 
@@ -198,14 +196,12 @@
 
 /* Font variables come from next/font on <html>; Noto families cover every Indic script. */
 @theme inline {
-  --font-sans: var(--font-inter), var(--font-noto-deva), var(--font-noto-beng),
-    var(--font-noto-telu), var(--font-noto-taml), var(--font-noto-gujr), var(--font-noto-arab),
-    var(--font-noto-knda), var(--font-noto-orya), var(--font-noto-mlym), var(--font-noto-guru),
-    ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-bricolage), var(--font-noto-deva), var(--font-noto-beng),
-    var(--font-noto-telu), var(--font-noto-taml), var(--font-noto-gujr), var(--font-noto-arab),
-    var(--font-noto-knda), var(--font-noto-orya), var(--font-noto-mlym), var(--font-noto-guru),
-    ui-sans-serif, system-ui, sans-serif;
+  --font-sans:
+    var(--font-inter), var(--font-noto-deva), var(--font-noto-beng), var(--font-noto-telu), var(--font-noto-taml), var(--font-noto-gujr), var(--font-noto-arab),
+    var(--font-noto-knda), var(--font-noto-orya), var(--font-noto-mlym), var(--font-noto-guru), ui-sans-serif, system-ui, sans-serif;
+  --font-display:
+    var(--font-bricolage), var(--font-noto-deva), var(--font-noto-beng), var(--font-noto-telu), var(--font-noto-taml), var(--font-noto-gujr),
+    var(--font-noto-arab), var(--font-noto-knda), var(--font-noto-orya), var(--font-noto-mlym), var(--font-noto-guru), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
 }
 

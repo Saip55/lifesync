@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readPlainText, sniffType } from "./sniff";
 
-const bytes = (...parts: (number[] | string)[]) =>
-  new Uint8Array(parts.flatMap((p) => (typeof p === "string" ? [...p].map((c) => c.charCodeAt(0)) : p)));
+const bytes = (...parts: (number[] | string)[]) => new Uint8Array(parts.flatMap((p) => (typeof p === "string" ? [...p].map((c) => c.charCodeAt(0)) : p)));
 
 describe("sniffType", () => {
   it.each([

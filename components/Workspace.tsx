@@ -15,10 +15,7 @@ import { AlertIcon, ArrowRightIcon, PhoneIcon, ShieldIcon } from "./Icons";
 const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
 type Status =
-  | { kind: "idle" }
-  | { kind: "running"; stage: Stage }
-  | { kind: "done"; result: AnalyzeResult; sample: boolean }
-  | { kind: "failed"; error: ErrorKey };
+  { kind: "idle" } | { kind: "running"; stage: Stage } | { kind: "done"; result: AnalyzeResult; sample: boolean } | { kind: "failed"; error: ErrorKey };
 
 // Smooth scrolling only for people who have not asked their system to reduce motion.
 const scrollBehavior = (): ScrollBehavior => (window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth");
@@ -48,7 +45,7 @@ export function Workspace() {
       request.current?.abort();
       previews.current.forEach((a) => URL.revokeObjectURL(a.url));
     },
-    []
+    [],
   );
 
   // /try?example=flood opens with that example filled in (linked from the home page).
@@ -102,7 +99,7 @@ export function Workspace() {
         setLocation({ status: "denied" });
         setError("location");
       },
-      { timeout: 8000, maximumAge: 300_000 }
+      { timeout: 8000, maximumAge: 300_000 },
     );
   };
 

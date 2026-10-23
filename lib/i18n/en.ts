@@ -44,7 +44,7 @@ export const en = {
   },
   proof: {
     factChecked: "Fact-checked with Google Search",
-    languages: "6 Indian languages",
+    languages: "Answers in 12 Indian languages",
     private: "No login, nothing stored",
   },
   inputs: {

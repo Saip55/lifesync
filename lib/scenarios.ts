@@ -36,8 +36,7 @@ export const SCENARIOS: Scenario[] = [
         language_code: "en",
         category: "medical",
         risk_level: "high",
-        risk_reason:
-          "Chest heaviness with dizziness needs urgent medical assessment, and a blood thinner taken with aspirin raises bleeding risk.",
+        risk_reason: "Chest heaviness with dizziness needs urgent medical assessment, and a blood thinner taken with aspirin raises bleeding risk.",
         verified_facts: [
           {
             claim: "Taking an anticoagulant together with aspirin increases the risk of bleeding.",
@@ -112,13 +111,9 @@ export const SCENARIOS: Scenario[] = [
         },
         rumor_verdict: null,
         confidence: 78,
-        couldnt_verify: [
-          "The name and dose of the new blood thinner — the handwriting is unclear.",
-          "Whether the doctor knows about the daily aspirin.",
-        ],
+        couldnt_verify: ["The name and dose of the new blood thinner — the handwriting is unclear.", "Whether the doctor knows about the daily aspirin."],
         critic_notes: ["Removed a guessed dose for the blood thinner.", "Added WHO warning signs as source."],
-        spoken_summary:
-          "Chest heaviness and dizziness need a doctor today. The new blood thinner together with aspirin can raise bleeding risk.",
+        spoken_summary: "Chest heaviness and dizziness need a doctor today. The new blood thinner together with aspirin can raise bleeding risk.",
       },
     },
   },
@@ -126,8 +121,7 @@ export const SCENARIOS: Scenario[] = [
     id: "flood",
     label: "Water entering home",
     tag: "Marathi · voice",
-    prefill:
-      "आमच्या गल्लीत पाणी घरात शिरतंय. आजी ऑक्सिजन कॉन्सन्ट्रेटरवर आहेत आणि लाईट कधीही जाऊ शकते. काय करू?",
+    prefill: "आमच्या गल्लीत पाणी घरात शिरतंय. आजी ऑक्सिजन कॉन्सन्ट्रेटरवर आहेत आणि लाईट कधीही जाऊ शकते. काय करू?",
     sample: {
       verified: true,
       sources: [
@@ -140,8 +134,7 @@ export const SCENARIOS: Scenario[] = [
         { key: "language", value: "Marathi (auto-detected)" },
       ],
       card: {
-        situation:
-          "Floodwater is entering the home while an elderly family member depends on an oxygen concentrator and power may fail.",
+        situation: "Floodwater is entering the home while an elderly family member depends on an oxygen concentrator and power may fail.",
         language_code: "en",
         category: "disaster",
         risk_level: "critical",
@@ -243,8 +236,7 @@ export const SCENARIOS: Scenario[] = [
             urgency: "today",
             type: "message",
             payload: {
-              message:
-                "This message is false. RBI has not announced any nationwide ATM shutdown. Please check rbi.org.in or PIB Fact Check before forwarding.",
+              message: "This message is false. RBI has not announced any nationwide ATM shutdown. Please check rbi.org.in or PIB Fact Check before forwarding.",
             },
             needs_confirmation: true,
           },

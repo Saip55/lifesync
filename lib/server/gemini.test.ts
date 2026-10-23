@@ -90,7 +90,7 @@ describe("generateGrounded", () => {
       reply({
         text: '{"card":{}}',
         candidates: [{ groundingMetadata: { groundingChunks: [{ web: { uri: "https://pib.gov.in/a", title: "PIB" } }] } }],
-      })
+      }),
     );
     const out = await generateGrounded(call);
     expect(sdk.generateContent.mock.calls[0]?.[0].config.tools).toEqual([{ googleSearch: {} }]);

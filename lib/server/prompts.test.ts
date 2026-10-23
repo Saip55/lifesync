@@ -16,7 +16,7 @@ describe("asData", () => {
     fc.assert(
       fc.property(fc.string({ unit: fc.constantFrom("<", "/", "d", "a", "t", ">", "D", "A", " ", "x") }), (text) => {
         expect(fences(asData(text))).toEqual(["<data>", "</data>"]);
-      })
+      }),
     );
   });
 });

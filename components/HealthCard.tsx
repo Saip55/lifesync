@@ -23,7 +23,7 @@ function qrText(card: HealthCardData) {
 function Field({ label, children, wide = false }: { label: string; children: React.ReactNode; wide?: boolean }) {
   return (
     <div className={wide ? "col-span-2" : undefined}>
-      <dt className="text-utility font-medium uppercase tracking-[0.06em] text-quiet">{label}</dt>
+      <dt className="text-utility font-medium tracking-[0.06em] text-quiet uppercase">{label}</dt>
       <dd className="mt-1 text-caption text-graphite">{children}</dd>
     </div>
   );
@@ -49,7 +49,7 @@ export function HealthCard({ card }: { card: HealthCardData }) {
     <section aria-labelledby="health-card-title" className="print-area rounded-card border border-linen bg-canvas">
       <header className="flex items-center justify-between gap-3 border-b border-hairline px-5 py-4">
         <div>
-          <p className="text-utility font-medium uppercase tracking-[0.06em] text-quiet">{h.title}</p>
+          <p className="text-utility font-medium tracking-[0.06em] text-quiet uppercase">{h.title}</p>
           <h3 id="health-card-title" className="font-display text-card font-medium tracking-[-0.01em]">
             {card.name || h.title}
           </h3>
@@ -72,7 +72,7 @@ export function HealthCard({ card }: { card: HealthCardData }) {
             {card.conditions.join(", ") || h.none}
           </Field>
           <div className="col-span-2">
-            <dt className="text-utility font-medium uppercase tracking-[0.06em] text-quiet">{h.medicines}</dt>
+            <dt className="text-utility font-medium tracking-[0.06em] text-quiet uppercase">{h.medicines}</dt>
             <dd className="mt-1.5">
               <table className="w-full text-caption">
                 <thead className="sr-only">
@@ -122,9 +122,7 @@ export function HealthCard({ card }: { card: HealthCardData }) {
           ))}
         </ul>
       )}
-      <p className="border-t border-hairline px-5 py-3 text-utility text-quiet">
-        {h.footer}
-      </p>
+      <p className="border-t border-hairline px-5 py-3 text-utility text-quiet">{h.footer}</p>
     </section>
   );
 }

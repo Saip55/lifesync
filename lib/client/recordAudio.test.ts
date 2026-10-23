@@ -14,7 +14,7 @@ class FakeRecorder {
   readonly mimeType: string;
   constructor(
     readonly stream: MediaStream,
-    readonly options: MediaRecorderOptions
+    readonly options: MediaRecorderOptions,
   ) {
     this.mimeType = options.mimeType ?? "audio/webm";
     recorders.push(this);

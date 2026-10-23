@@ -114,9 +114,7 @@ export function UseCases() {
           <div key={active} className="space-y-3">
             <div className="animate-rise rounded-card bg-canvas/80 p-5 shadow-seg backdrop-blur">
               <p className="text-utility font-semibold tracking-[0.06em] text-quiet uppercase">{c.youShare}</p>
-              <p className="mt-3 font-display text-[1.1875rem] leading-[1.45] tracking-[-0.01em] text-graphite sm:text-[1.3125rem]">
-                “{item.input}”
-              </p>
+              <p className="mt-3 font-display text-[1.1875rem] leading-[1.45] tracking-[-0.01em] text-graphite sm:text-[1.3125rem]">“{item.input}”</p>
               <p className="mt-3 text-utility text-quiet">{item.kind}</p>
             </div>
 
@@ -132,7 +130,9 @@ export function UseCases() {
                 </span>
               </div>
 
-              <p className={`mt-4 flex items-center gap-2 rounded-feature border-s-[3px] px-3 py-2 text-caption font-semibold ${risk.bar} ${risk.soft} ${risk.text}`}>
+              <p
+                className={`mt-4 flex items-center gap-2 rounded-feature border-s-[3px] px-3 py-2 text-caption font-semibold ${risk.bar} ${risk.soft} ${risk.text}`}
+              >
                 <AlertIcon size={15} />
                 {item.risk}
               </p>

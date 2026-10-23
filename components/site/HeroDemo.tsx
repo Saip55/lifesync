@@ -37,7 +37,7 @@ export function HeroDemo() {
         if (entry?.isIntersecting) play();
         else stop();
       },
-      { threshold: 0.25 }
+      { threshold: 0.25 },
     );
     io.observe(el);
     return () => {
@@ -124,9 +124,7 @@ export function HeroDemo() {
           <div className="mt-3 grid grid-cols-4 gap-1.5">
             {[1, 2, 3, 6].map((n) => (
               <span key={n} className="h-1 overflow-hidden rounded-full bg-black/[0.07]">
-                <span
-                  className={`block h-full rounded-full bg-graphite transition-[width] duration-700 ease-out ${at(n) ? "w-full" : "w-0"}`}
-                />
+                <span className={`block h-full rounded-full bg-graphite transition-[width] duration-700 ease-out ${at(n) ? "w-full" : "w-0"}`} />
               </span>
             ))}
           </div>
@@ -165,9 +163,7 @@ export function HeroDemo() {
           <Row on={at(FINAL)} className="mt-3 flex items-center gap-3">
             <span className="text-utility text-quiet">{d.confidence}</span>
             <span className="h-1.5 flex-1 rounded-full bg-black/[0.07]">
-              <span
-                className={`block h-full rounded-full bg-sage-ink transition-[width] delay-150 duration-1000 ease-out ${at(FINAL) ? "w-[78%]" : "w-0"}`}
-              />
+              <span className={`block h-full rounded-full bg-sage-ink transition-[width] delay-150 duration-1000 ease-out ${at(FINAL) ? "w-[78%]" : "w-0"}`} />
             </span>
             <span className="text-utility font-semibold text-graphite tabular-nums">78%</span>
           </Row>
@@ -179,9 +175,7 @@ export function HeroDemo() {
 
 function InputChip({ done, className = "", children }: { done: boolean; className?: string; children: ReactNode }) {
   return (
-    <li
-      className={`relative flex w-fit items-center gap-2.5 rounded-card bg-canvas/95 px-3 py-2.5 shadow-window ${className}`}
-    >
+    <li className={`relative flex w-fit items-center gap-2.5 rounded-card bg-canvas/95 px-3 py-2.5 shadow-window ${className}`}>
       {children}
       {done && (
         <span className="absolute -end-1.5 -top-1.5 grid size-5 animate-stamp place-items-center rounded-full bg-sage-ink text-canvas">
@@ -194,29 +188,19 @@ function InputChip({ done, className = "", children }: { done: boolean; classNam
 
 function Row({ on, className = "", children }: { on: boolean; className?: string; children: ReactNode }) {
   return (
-    <div className={`transition-all duration-500 ease-out ${on ? "translate-y-0 opacity-100" : "translate-y-1.5 opacity-0"} ${className}`}>
-      {children}
-    </div>
+    <div className={`transition-all duration-500 ease-out ${on ? "translate-y-0 opacity-100" : "translate-y-1.5 opacity-0"} ${className}`}>{children}</div>
   );
 }
 
 function Fact({ on, struck = false, claim, children }: { on: boolean; struck?: boolean; claim: string; children: ReactNode }) {
   return (
     <li className="flex flex-col gap-1.5 px-3 py-2.5">
-      <span
-        className={`text-utility transition-colors duration-500 ${struck ? "text-quiet line-through" : on ? "text-graphite" : "text-quiet"}`}
-      >
-        {claim}
-      </span>
+      <span className={`text-utility transition-colors duration-500 ${struck ? "text-quiet line-through" : on ? "text-graphite" : "text-quiet"}`}>{claim}</span>
       <span className="flex h-[22px] items-center">{on && children}</span>
     </li>
   );
 }
 
 function Chip({ className, children }: { className: string; children: ReactNode }) {
-  return (
-    <span className={`flex w-fit animate-stamp items-center gap-1 rounded-badge px-1.5 py-0.5 text-utility font-medium ${className}`}>
-      {children}
-    </span>
-  );
+  return <span className={`flex w-fit animate-stamp items-center gap-1 rounded-badge px-1.5 py-0.5 text-utility font-medium ${className}`}>{children}</span>;
 }

@@ -63,7 +63,11 @@ describe("fetchNews", () => {
 });
 
 describe("fetchWeather", () => {
-  const body = { current: { temperature_2m: 31 }, hourly: { time: [], precipitation_probability: [], precipitation: [] }, daily: { precipitation_sum: [1, 2] } };
+  const body = {
+    current: { temperature_2m: 31 },
+    hourly: { time: [], precipitation_probability: [], precipitation: [] },
+    daily: { precipitation_sum: [1, 2] },
+  };
 
   it("asks Open-Meteo about the user's location", async () => {
     fetchMock.mockResolvedValue(Response.json(body));
@@ -99,7 +103,7 @@ describe("summarizeWeather", () => {
         daily: { precipitation_sum: [48.2, 12] },
       },
       "your location",
-      now
+      now,
     );
     expect(summary).toContain("Now 27°C");
     expect(summary).toContain("up to 85% chance of rain"); // the 100% at 03:00 is in the past
@@ -122,7 +126,9 @@ describe("fetchTraffic", () => {
   it("finds the nearest place, then the drive time with and without traffic", async () => {
     vi.stubEnv("GOOGLE_MAPS_KEY", "maps-key");
     fetchMock
-      .mockResolvedValueOnce(Response.json({ places: [{ displayName: { text: "Ruby Hall" }, formattedAddress: "Pune", location: { latitude: 18.53, longitude: 73.87 } }] }))
+      .mockResolvedValueOnce(
+        Response.json({ places: [{ displayName: { text: "Ruby Hall" }, formattedAddress: "Pune", location: { latitude: 18.53, longitude: 73.87 } }] }),
+      )
       .mockResolvedValueOnce(Response.json({ routes: [{ duration: "900s", staticDuration: "600s", distanceMeters: 5250 }] }));
     const t = await fetchTraffic(18.5, 73.8, "hospital", signal);
     expect(t).toEqual({ place: "Ruby Hall", address: "Pune", withTraffic: 15, withoutTraffic: 10, km: 5.3 });
@@ -138,13 +144,17 @@ describe("fetchTraffic", () => {
     fetchMock.mockResolvedValueOnce(Response.json({ places: [] }));
     await expect(fetchTraffic(18.5, 73.8, "hospital", signal)).resolves.toBeNull();
 
-    fetchMock.mockResolvedValueOnce(Response.json({ places: [{ location: { latitude: 1, longitude: 2 } }] })).mockResolvedValueOnce(Response.json({ routes: [] }));
+    fetchMock
+      .mockResolvedValueOnce(Response.json({ places: [{ location: { latitude: 1, longitude: 2 } }] }))
+      .mockResolvedValueOnce(Response.json({ routes: [] }));
     await expect(fetchTraffic(18.5, 73.8, "hospital", signal)).resolves.toBeNull();
 
     fetchMock.mockResolvedValueOnce(new Response("", { status: 403 }));
     await expect(fetchTraffic(18.5, 73.8, "hospital", signal)).rejects.toThrow("Places 403");
 
-    fetchMock.mockResolvedValueOnce(Response.json({ places: [{ location: { latitude: 1, longitude: 2 } }] })).mockResolvedValueOnce(new Response("", { status: 500 }));
+    fetchMock
+      .mockResolvedValueOnce(Response.json({ places: [{ location: { latitude: 1, longitude: 2 } }] }))
+      .mockResolvedValueOnce(new Response("", { status: 500 }));
     await expect(fetchTraffic(18.5, 73.8, "hospital", signal)).rejects.toThrow("Routes 500");
   });
 });

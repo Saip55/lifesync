@@ -13,9 +13,13 @@ const post = (form: FormData | BodyInit, headers: Record<string, string> = {}, i
       body: form,
       headers: { "x-forwarded-for": `203.0.113.${ip}`, ...headers },
       ...init,
-    })
+    }),
   );
-const lines = async (res: Response) => (await res.text()).trim().split("\n").map((l) => JSON.parse(l) as Record<string, unknown>);
+const lines = async (res: Response) =>
+  (await res.text())
+    .trim()
+    .split("\n")
+    .map((l) => JSON.parse(l) as Record<string, unknown>);
 const textForm = (text: string) => {
   const f = new FormData();
   f.set("text", text);
@@ -121,7 +125,7 @@ describe("POST /api/analyze", () => {
         new Promise((_, reject) => {
           seen = signal;
           signal.addEventListener("abort", () => reject(Object.assign(new Error("aborted"), { name: "AbortError" })));
-        })
+        }),
     );
     const res = await post(textForm("help"), {}, { signal: browser.signal });
     const reading = res.text();

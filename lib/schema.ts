@@ -108,7 +108,4 @@ export const CriticOutputSchema = z.object({
 export type Stage = 0 | 1 | 2 | 3;
 export const ERROR_CODES = ["no_input", "too_large", "bad_file", "not_configured", "timeout", "model", "rate_limited", "forbidden"] as const;
 export type ErrorCode = (typeof ERROR_CODES)[number];
-export type StreamEvent =
-  | { type: "stage"; stage: Stage }
-  | { type: "result"; result: AnalyzeResult }
-  | { type: "error"; code: ErrorCode; message: string };
+export type StreamEvent = { type: "stage"; stage: Stage } | { type: "result"; result: AnalyzeResult } | { type: "error"; code: ErrorCode; message: string };

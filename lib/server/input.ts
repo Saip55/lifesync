@@ -25,7 +25,7 @@ export type AnalyzeInput = {
 export class InputError extends Error {
   constructor(
     readonly code: Extract<ErrorCode, "no_input" | "too_large" | "bad_file">,
-    message: string
+    message: string,
   ) {
     super(message);
     this.name = "InputError";
@@ -66,7 +66,11 @@ export async function readForm(req: Request): Promise<FormData> {
 const isFile = (v: FormDataEntryValue | null): v is File => v instanceof File && v.size > 0;
 
 // File names reach the prompt, so keep them short and free of control and markup characters.
-const safeName = (name: string) => name.replace(/[\u0000-\u001f\u007f<>"`]/g, "").trim().slice(0, MAX_NAME) || "file";
+const safeName = (name: string) =>
+  name
+    .replace(/[\u0000-\u001f\u007f<>"`]/g, "")
+    .trim()
+    .slice(0, MAX_NAME) || "file";
 
 const num = (v: FormDataEntryValue | null, min: number, max: number) => {
   const n = typeof v === "string" && v.trim() ? Number(v) : NaN;
@@ -76,7 +80,9 @@ const num = (v: FormDataEntryValue | null, min: number, max: number) => {
 const isOneOf = <T extends string>(list: readonly T[], v: string | null): v is T => v !== null && (list as readonly string[]).includes(v);
 
 export async function parseForm(form: FormData): Promise<AnalyzeInput> {
-  const text = String(form.get("text") ?? "").trim().slice(0, MAX_TEXT);
+  const text = String(form.get("text") ?? "")
+    .trim()
+    .slice(0, MAX_TEXT);
   const uploads = form.getAll("files").filter(isFile);
   const audioEntry = form.get("audio");
   const audio = isFile(audioEntry) ? audioEntry : null;

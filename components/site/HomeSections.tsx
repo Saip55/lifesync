@@ -64,7 +64,10 @@ export function HomeSections() {
 
       {/* How it works */}
       <section id="how" className="relative mx-auto max-w-[1240px] px-4 pt-24 sm:px-6 sm:pt-32">
-        <span aria-hidden="true" className="absolute inset-x-0 top-16 -z-10 h-[420px] rounded-[40px] bg-[radial-gradient(60%_80%_at_20%_0%,rgba(225,234,237,0.9),transparent_70%)]" />
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-0 top-16 -z-10 h-[420px] rounded-[40px] bg-[radial-gradient(60%_80%_at_20%_0%,rgba(225,234,237,0.9),transparent_70%)]"
+        />
         <div className="grid items-start gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
           <Reveal>
             <SectionHeading title={t.how.title} body={t.how.body} />
@@ -72,9 +75,7 @@ export function HomeSections() {
               {t.how.steps.map((s, i) => (
                 <li key={s.title} className="border-b border-hairline">
                   <Reveal delay={150 + i * 110} className="flex gap-5 py-5">
-                    <span className={`grid size-8 shrink-0 place-items-center rounded-full text-caption font-semibold ${STEP_TINTS[i]}`}>
-                      {i + 1}
-                    </span>
+                    <span className={`grid size-8 shrink-0 place-items-center rounded-full text-caption font-semibold ${STEP_TINTS[i]}`}>{i + 1}</span>
                     <div>
                       <h3 className="text-body font-semibold text-graphite">{s.title}</h3>
                       <p className="mt-0.5 text-caption text-quiet">{s.body}</p>
@@ -201,9 +202,7 @@ function FactCheckIllustration() {
               const c = chip[status];
               return (
                 <li key={claim} className="py-3">
-                  <span className={`text-caption ${status === "removed" ? "text-quiet line-through decoration-quiet" : "text-graphite"}`}>
-                    {claim}
-                  </span>
+                  <span className={`text-caption ${status === "removed" ? "text-quiet line-through decoration-quiet" : "text-graphite"}`}>{claim}</span>
                   <span className={`mt-1.5 flex w-fit items-center gap-1 rounded-badge px-1.5 py-0.5 text-utility font-medium ${c.cls}`}>
                     <c.Icon size={12} strokeWidth={2.2} />
                     {c.label}

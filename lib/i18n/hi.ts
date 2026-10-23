@@ -44,7 +44,7 @@ export const hi: Dict = {
   },
   proof: {
     factChecked: "Google Search से तथ्य-जाँच",
-    languages: "6 भारतीय भाषाएँ",
+    languages: "12 भारतीय भाषाओं में जवाब",
     private: "कोई लॉगिन नहीं, कुछ भी सेव नहीं",
   },
   inputs: {

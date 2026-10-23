@@ -21,7 +21,11 @@ export function mapsHref(destination: string) {
   return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
 }
 
-const icsDate = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+const icsDate = (d: Date) =>
+  d
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d{3}/, "");
 const icsText = (s: string) =>
   s
     .replace(/\\/g, "\\\\")

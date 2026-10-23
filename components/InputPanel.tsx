@@ -6,23 +6,10 @@ import { SCENARIOS, type Scenario } from "@/lib/scenarios";
 import { fill, type Dict } from "@/lib/i18n";
 import { formatSeconds, MAX_RECORDING_SECONDS, useRecorder, type VoiceNote } from "@/lib/client/recordAudio";
 import { useLanguage } from "./LanguageProvider";
-import {
-  ArrowRightIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  FileIcon,
-  LockIcon,
-  MicIcon,
-  PaperclipIcon,
-  PinIcon,
-  StopIcon,
-  XIcon,
-} from "./Icons";
+import { ArrowRightIcon, CheckIcon, ChevronDownIcon, FileIcon, LockIcon, MicIcon, PaperclipIcon, PinIcon, StopIcon, XIcon } from "./Icons";
 
 export type Attachment = { id: string; file: File; url: string };
-export type LocationState =
-  | { status: "idle" | "loading" | "denied" }
-  | { status: "ready"; lat: number; lon: number };
+export type LocationState = { status: "idle" | "loading" | "denied" } | { status: "ready"; lat: number; lon: number };
 export type ErrorKey = keyof Dict["workspace"]["errors"];
 
 type Props = {

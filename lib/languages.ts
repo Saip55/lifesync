@@ -28,5 +28,4 @@ const SITE_CODES: readonly string[] = ["en", "hi", "bn", "mr", "te", "ta"] satis
 type SiteLanguage = Extract<(typeof LANGUAGES)[number], { code: SiteLanguageCode }>;
 export const SITE_LANGUAGES = LANGUAGES.filter((l): l is SiteLanguage => SITE_CODES.includes(l.code));
 
-export const isSiteLanguage = (code: string | null | undefined): code is SiteLanguageCode =>
-  SITE_LANGUAGES.some((l) => l.code === code);
+export const isSiteLanguage = (code: string | null | undefined): code is SiteLanguageCode => SITE_LANGUAGES.some((l) => l.code === code);

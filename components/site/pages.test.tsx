@@ -19,7 +19,7 @@ const page = (children: React.ReactNode) =>
     <LanguageProvider>
       <SkipLink />
       {children}
-    </LanguageProvider>
+    </LanguageProvider>,
   );
 
 describe("site pages", () => {
