@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+/*
+  Design tokens. Every colour the UI uses comes from here, so a new theme
+  only needs this block changed. Placeholder neutral palette until the
+  final design arrives.
+*/
+:root {
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --foreground: #0f172a;
+  --muted: #475569;
+  --border: #cbd5e1;
+  --primary: #1d4ed8;
+  --primary-foreground: #ffffff;
+
+  --risk-critical: #b91c1c;
+  --risk-high: #c2410c;
+  --risk-moderate: #a16207;
+  --risk-low: #15803d;
+  --risk-info: #1d4ed8;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-risk-critical: var(--risk-critical);
+  --color-risk-high: var(--risk-high);
+  --color-risk-moderate: var(--risk-moderate);
+  --color-risk-low: var(--risk-low);
+  --color-risk-info: var(--risk-info);
+  --font-sans: var(--font-noto-sans), system-ui, sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
