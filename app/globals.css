@@ -13,9 +13,29 @@
   --color-charcoal: #454545;
   --color-quiet: #6a6972;
   --color-ash: #a8a8a8;
-  --color-research: #207dff;
+  /* Darker than the reference blue so links pass 4.5:1 on canvas. */
+  --color-research: #1a67d6;
   --color-hairline: rgb(0 0 0 / 0.08);
   --color-tool-border: rgb(0 0 0 / 0.13);
+
+  /* Landscape tints: each soft fill pairs with an ink that passes 4.5:1 on it. */
+  --color-sky: #e1eaed;
+  --color-sky-ink: #3b6474;
+  --color-sage: #e4ebdf;
+  --color-sage-ink: #4b6847;
+  --color-sand: #f4e8d6;
+  --color-sand-ink: #85562a;
+  --color-peach: #fbe6d2;
+  --color-peach-ink: #a04d27;
+  --color-sun: #f4a66d;
+  --color-lilac: #ebe7f2;
+  --color-lilac-ink: #5a4f80;
+
+  /* Evening desk: the one dark section. */
+  --color-dusk: #2a2926;
+  --color-dusk-raised: #34332f;
+  --color-dusk-line: rgb(255 255 255 / 0.09);
+  --color-dusk-text: #c9c6bf;
 
   /* Risk scale. Always paired with a text label and icon, never colour alone. */
   --color-critical: #b42318;
@@ -61,6 +81,98 @@
 
   --animate-rise: rise 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
   --animate-breathe: breathe 1.6s ease-in-out infinite;
+  --animate-stamp: stamp 360ms cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+  --animate-wave: wave 1.1s ease-in-out infinite;
+  --animate-drop-in: drop-in 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-word: word 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-fade: fade 900ms ease-out both;
+  --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) infinite;
+  --animate-sheen: sheen 1.1s cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-progress: progress var(--progress-ms, 6000ms) linear both;
+
+  @keyframes drop-in {
+    from {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes word {
+    from {
+      opacity: 0;
+      filter: blur(8px);
+      transform: translateY(0.35em);
+    }
+    to {
+      opacity: 1;
+      filter: blur(0);
+      transform: none;
+    }
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes pulse-ring {
+    0% {
+      box-shadow: 0 0 0 0 rgb(75 104 71 / 0.45);
+    }
+    70%,
+    100% {
+      box-shadow: 0 0 0 8px rgb(75 104 71 / 0);
+    }
+  }
+  @keyframes sheen {
+    from {
+      transform: translateX(-120%) skewX(-20deg);
+    }
+    to {
+      transform: translateX(220%) skewX(-20deg);
+    }
+  }
+  @keyframes progress {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes stamp {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes wave {
+    0%,
+    100% {
+      transform: scaleY(0.45);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+  }
 
   @keyframes rise {
     from {
@@ -89,7 +201,7 @@
     var(--font-noto-telu), var(--font-noto-taml), var(--font-noto-gujr), var(--font-noto-arab),
     var(--font-noto-knda), var(--font-noto-orya), var(--font-noto-mlym), var(--font-noto-guru),
     ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-instrument), var(--font-noto-deva), var(--font-noto-beng),
+  --font-display: var(--font-bricolage), var(--font-noto-deva), var(--font-noto-beng),
     var(--font-noto-telu), var(--font-noto-taml), var(--font-noto-gujr), var(--font-noto-arab),
     var(--font-noto-knda), var(--font-noto-orya), var(--font-noto-mlym), var(--font-noto-guru),
     ui-sans-serif, system-ui, sans-serif;
@@ -100,10 +212,11 @@
   html {
     color-scheme: light;
     scroll-behavior: smooth;
-    scroll-padding-top: 120px;
+    scroll-padding-top: 84px;
     -webkit-text-size-adjust: 100%;
   }
   body {
+    transition: opacity 180ms ease-out;
     background: var(--color-canvas);
     color: var(--color-graphite);
     font-family: var(--font-sans);
@@ -118,6 +231,26 @@
   }
   summary::-webkit-details-marker {
     display: none;
+  }
+}
+
+/* Set by the pre-paint script in app/layout.tsx until the saved language is applied. */
+html[data-lang-pending] body {
+  opacity: 0;
+}
+
+/* Scroll reveal. Hidden only when scripts run and motion is welcome, so content
+   is never lost without JS. <Reveal> sets data-shown once it enters the viewport. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    transition:
+      opacity 700ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  [data-reveal]:not([data-shown]) {
+    opacity: 0;
+    transform: translateY(24px);
   }
 }
 

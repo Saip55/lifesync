@@ -3,24 +3,24 @@
 import { useState } from "react";
 import type { Action } from "@/lib/schema";
 import { downloadReminder, mapsHref, telHref, whatsappHref } from "@/lib/client/actions";
+import { fill, type Dict } from "@/lib/i18n";
+import { useLanguage } from "./LanguageProvider";
 import { ArrowRightIcon, BellIcon, InfoIcon, MessageIcon, NavigateIcon, PhoneIcon } from "./Icons";
 
 const TYPE_ICON = { call: PhoneIcon, message: MessageIcon, reminder: BellIcon, navigate: NavigateIcon, info: InfoIcon };
-const URGENCY_LABEL = { now: "Now", today: "Today", this_week: "This week" };
-
-function describe(action: Action) {
-  const { phone, destination } = action.payload;
+function describe(action: Action, t: Dict["card"]["confirm"]) {
+  const vars = { phone: action.payload.phone ?? "", destination: action.payload.destination ?? "" };
   switch (action.type) {
     case "call":
-      return { prompt: `This opens your phone to call ${phone}.`, confirm: `Yes, call ${phone}` };
+      return { prompt: fill(t.call, vars), confirm: fill(t.callButton, vars) };
     case "message":
-      return { prompt: "This opens WhatsApp with the message below. You can edit it before sending.", confirm: "Open WhatsApp" };
+      return { prompt: t.message, confirm: t.messageButton };
     case "navigate":
-      return { prompt: `This opens Google Maps directions to “${destination}”.`, confirm: "Open Maps" };
+      return { prompt: fill(t.navigate, vars), confirm: t.navigateButton };
     case "reminder":
-      return { prompt: "This downloads a calendar reminder with a 5-minute alert.", confirm: "Add reminder" };
+      return { prompt: t.reminder, confirm: t.reminderButton };
     case "info":
-      return { prompt: "", confirm: "Continue" };
+      return { prompt: "", confirm: t.infoButton };
   }
 }
 
@@ -34,10 +34,11 @@ function run(action: Action) {
 
 export function ActionButton({ action, index }: { action: Action; index: number }) {
   const [confirming, setConfirming] = useState(false);
+  const c = useLanguage().t.card;
   const Glyph = TYPE_ICON[action.type];
   const isInfo = action.type === "info";
   const isNow = action.urgency === "now";
-  const { prompt, confirm } = describe(action);
+  const { prompt, confirm } = describe(action, c.confirm);
 
   const body = (
     <>
@@ -56,7 +57,7 @@ export function ActionButton({ action, index }: { action: Action; index: number 
               isNow ? "bg-graphite/90 text-canvas" : "border border-linen text-quiet"
             }`}
           >
-            {URGENCY_LABEL[action.urgency]}
+            {c.urgency[action.urgency]}
           </span>
         </span>
         <span className="mt-0.5 block text-caption text-quiet">{action.detail}</span>
@@ -86,7 +87,7 @@ export function ActionButton({ action, index }: { action: Action; index: number 
       )}
 
       {confirming && (
-        <div className="border-t border-hairline bg-cloud px-4 py-4 sm:ps-[72px]" role="group" aria-label="Confirm action">
+        <div className="border-t border-hairline bg-cloud px-4 py-4 sm:ps-[72px]" role="group" aria-label={c.confirmGroup}>
           <p className="text-caption text-charcoal">{prompt}</p>
           {action.type === "message" && action.payload.message && (
             <p className="mt-2 rounded-badge border border-linen bg-canvas p-3 text-caption text-graphite">
@@ -109,7 +110,7 @@ export function ActionButton({ action, index }: { action: Action; index: number 
               onClick={() => setConfirming(false)}
               className="h-10 rounded-full px-4 text-caption font-medium text-quiet transition-colors hover:bg-board hover:text-graphite"
             >
-              Not now
+              {c.notNow}
             </button>
           </div>
         </div>

@@ -85,3 +85,23 @@ export type AnalyzeResult = {
   sources: Source[];
   signals: { label: string; value: string }[];
 };
+
+// What each Gemini call must return. Plan adds hints for live data the critic needs;
+// the critic also lists its own sources in case grounding metadata comes back empty.
+export const PlanOutputSchema = z.object({
+  card: ActionCardSchema,
+  news_query: z.string(),
+  destination_query: z.string().nullable(),
+});
+export type PlanOutput = z.infer<typeof PlanOutputSchema>;
+
+export const CriticOutputSchema = z.object({
+  card: ActionCardSchema,
+  sources: z.array(z.object({ title: z.string(), url: z.string() })).default([]),
+});
+
+// Newline-delimited JSON events streamed by POST /api/analyze.
+export type StreamEvent =
+  | { type: "stage"; stage: number }
+  | { type: "result"; result: AnalyzeResult }
+  | { type: "error"; code: "no_input" | "too_large" | "bad_file" | "not_configured" | "timeout" | "model"; message: string };

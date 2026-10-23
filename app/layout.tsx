@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import {
-  Instrument_Sans,
+  Bricolage_Grotesque,
   Inter,
   Noto_Sans_Arabic,
   Noto_Sans_Bengali,
@@ -14,10 +14,13 @@ import {
   Noto_Sans_Telugu,
 } from "next/font/google";
 import { LanguageProvider } from "@/components/LanguageProvider";
+import { LANG_STORAGE_KEY } from "@/lib/i18n";
+import { SITE_LANGUAGES } from "@/lib/languages";
 import "./globals.css";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
-const instrument = Instrument_Sans({ variable: "--font-instrument", subsets: ["latin"], weight: ["500", "600"] });
+// Display face: a warm, slightly quirky grotesque with optical sizes, for headlines only.
+const display = Bricolage_Grotesque({ variable: "--font-bricolage", subsets: ["latin"], axes: ["opsz", "wdth"] });
 
 // Indic and Urdu scripts load only when their glyphs appear on the page.
 // next/font needs literal options in every call, so they are repeated.
@@ -32,9 +35,15 @@ const orya = Noto_Sans_Oriya({ variable: "--font-noto-orya", subsets: ["oriya"],
 const mlym = Noto_Sans_Malayalam({ variable: "--font-noto-mlym", subsets: ["malayalam"], weight: ["400", "500", "600"], preload: false });
 const guru = Noto_Sans_Gurmukhi({ variable: "--font-noto-guru", subsets: ["gurmukhi"], weight: ["400", "500", "600"], preload: false });
 
-const fontVars = [inter, instrument, deva, beng, telu, taml, gujr, arab, knda, orya, mlym, guru]
+const fontVars = [inter, display, deva, beng, telu, taml, gujr, arab, knda, orya, mlym, guru]
   .map((f) => f.variable)
   .join(" ");
+
+// Runs before first paint: if a non-English language was saved, hide the page until
+// LanguageProvider has swapped the text in. The timeout is a safety net if hydration fails.
+const LANG_SCRIPT = `try{var l=localStorage.getItem(${JSON.stringify(LANG_STORAGE_KEY)});if(l&&l!=="en"&&${JSON.stringify(
+  SITE_LANGUAGES.map((x) => x.code)
+)}.indexOf(l)>-1){var d=document.documentElement;d.lang=l;d.setAttribute("data-lang-pending","");setTimeout(function(){d.removeAttribute("data-lang-pending")},1500)}}catch(e){}`;
 
 export const metadata: Metadata = {
   title: "LifeSync — from a messy moment to the next right step",
@@ -48,7 +57,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" dir="ltr" className={fontVars}>
+    // The pre-paint script below may set lang before hydration, hence suppressHydrationWarning.
+    <html lang="en" dir="ltr" className={fontVars} suppressHydrationWarning>
+      <head>
+        {/* eslint-disable-next-line react/no-danger -- fixed string built above, no user input */}
+        <script dangerouslySetInnerHTML={{ __html: LANG_SCRIPT }} />
+      </head>
       <body className="min-h-dvh">
         <LanguageProvider>{children}</LanguageProvider>
       </body>

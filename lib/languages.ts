@@ -1,3 +1,4 @@
+// Every language the model can answer in. The server uses this list to label and validate replies.
 export const LANGUAGES = [
   { code: "en", english: "English", native: "English", dir: "ltr" },
   { code: "hi", english: "Hindi", native: "हिन्दी", dir: "ltr" },
@@ -13,8 +14,13 @@ export const LANGUAGES = [
   { code: "pa", english: "Punjabi", native: "ਪੰਜਾਬੀ", dir: "ltr" },
 ] as const;
 
-export type LanguageCode = (typeof LANGUAGES)[number]["code"];
-
 export function getLanguage(code: string) {
   return LANGUAGES.find((l) => l.code === code) ?? LANGUAGES[0];
 }
+
+// The site itself is fully translated into the six most widely spoken of these.
+export const SITE_LANGUAGES = LANGUAGES.filter((l) => ["en", "hi", "bn", "mr", "te", "ta"].includes(l.code));
+export type SiteLanguageCode = "en" | "hi" | "bn" | "mr" | "te" | "ta";
+
+export const isSiteLanguage = (code: string | null | undefined): code is SiteLanguageCode =>
+  SITE_LANGUAGES.some((l) => l.code === code);

@@ -1,12 +1,16 @@
+"use client";
+
+import { fill } from "@/lib/i18n";
+import { useLanguage } from "./LanguageProvider";
 import { CheckIcon } from "./Icons";
 
-export const STAGES = ["Understanding", "Live data", "Planning", "Fact-checking"] as const;
-
 export function ProgressStrip({ stage }: { stage: number }) {
+  const w = useLanguage().t.workspace;
+  const STAGES = w.stages;
   return (
     <div role="status" aria-live="polite" className="w-full">
       <span className="sr-only">
-        Step {stage + 1} of {STAGES.length}: {STAGES[stage]}
+        {fill(w.stepOf, { n: stage + 1, total: STAGES.length, label: STAGES[stage] ?? "" })}
       </span>
       <ol className="grid grid-cols-4 gap-2" aria-hidden="true">
         {STAGES.map((label, i) => {
@@ -23,7 +27,7 @@ export function ProgressStrip({ stage }: { stage: number }) {
               </span>
               <span
                 className={`flex items-center gap-1.5 text-utility font-medium sm:text-caption ${
-                  done || active ? "text-graphite" : "text-ash"
+                  done || active ? "text-graphite" : "text-quiet"
                 }`}
               >
                 {done && <CheckIcon size={14} className="text-low" />}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import type { HealthCard as HealthCardData } from "@/lib/schema";
 import { AlertIcon, PrinterIcon } from "./Icons";
+import { useLanguage } from "./LanguageProvider";
 
 // Compact plain-text summary for the QR code (kept under ~700 characters).
 function qrText(card: HealthCardData) {
@@ -30,6 +31,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 export function HealthCard({ card }: { card: HealthCardData }) {
   const [qr, setQr] = useState<string | null>(null);
+  const h = useLanguage().t.health;
 
   useEffect(() => {
     QRCode.toDataURL(qrText(card), { margin: 1, width: 280, color: { dark: "#2e2e2e", light: "#fdfcfb" } })
@@ -41,7 +43,7 @@ export function HealthCard({ card }: { card: HealthCardData }) {
     <section aria-labelledby="health-card-title" className="print-area rounded-card border border-linen bg-canvas">
       <header className="flex items-center justify-between gap-3 border-b border-hairline px-5 py-4">
         <div>
-          <p className="text-utility font-medium uppercase tracking-[0.06em] text-quiet">Health card</p>
+          <p className="text-utility font-medium uppercase tracking-[0.06em] text-quiet">{h.title}</p>
           <h3 id="health-card-title" className="font-display text-card font-medium tracking-[-0.01em]">
             {card.name}
           </h3>
@@ -52,19 +54,19 @@ export function HealthCard({ card }: { card: HealthCardData }) {
           className="no-print flex h-9 items-center gap-1.5 rounded-badge border border-tool-border ps-3 pe-2.5 text-caption text-graphite transition-colors hover:bg-cloud"
         >
           <PrinterIcon size={16} />
-          Print / PDF
+          {h.print}
         </button>
       </header>
 
       <div className="grid gap-5 p-5 sm:grid-cols-[1fr_auto]">
         <dl className="grid grid-cols-2 gap-x-6 gap-y-4">
-          <Field label="Age">{card.age}</Field>
-          <Field label="Blood group">{card.blood_group}</Field>
+          <Field label={h.age}>{card.age}</Field>
+          <Field label={h.blood}>{card.blood_group}</Field>
           <div className="col-span-2">
-            <Field label="Conditions">{card.conditions.join(", ") || "None stated"}</Field>
+            <Field label={h.conditions}>{card.conditions.join(", ") || h.none}</Field>
           </div>
           <div className="col-span-2">
-            <dt className="text-utility font-medium uppercase tracking-[0.06em] text-quiet">Medicines</dt>
+            <dt className="text-utility font-medium uppercase tracking-[0.06em] text-quiet">{h.medicines}</dt>
             <dd className="mt-1.5">
               <table className="w-full text-caption">
                 <tbody>
@@ -80,18 +82,18 @@ export function HealthCard({ card }: { card: HealthCardData }) {
             </dd>
           </div>
           <div className="col-span-2">
-            <Field label="Allergies">{card.allergies.join(", ") || "None stated"}</Field>
+            <Field label={h.allergies}>{card.allergies.join(", ") || h.none}</Field>
           </div>
         </dl>
 
         <div className="flex flex-col items-center gap-2 sm:w-36">
           {qr ? (
             // eslint-disable-next-line @next/next/no-img-element -- data URL, nothing to optimise
-            <img src={qr} alt="QR code with this health summary" width={144} height={144} className="rounded-badge" />
+            <img src={qr} alt={h.qrAlt} width={144} height={144} className="rounded-badge" />
           ) : (
             <div className="size-36 rounded-badge bg-board" />
           )}
-          <p className="text-center text-utility text-quiet">Scan for a text summary</p>
+          <p className="text-center text-utility text-quiet">{h.scan}</p>
         </div>
       </div>
 
@@ -106,7 +108,7 @@ export function HealthCard({ card }: { card: HealthCardData }) {
         </ul>
       )}
       <p className="border-t border-hairline px-5 py-3 text-utility text-quiet">
-        AI-generated from your inputs. A doctor or pharmacist must confirm every medicine and dose.
+        {h.footer}
       </p>
     </section>
   );

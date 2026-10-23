@@ -1,29 +1,28 @@
 "use client";
 
-import { LANGUAGES, type LanguageCode } from "@/lib/languages";
+import { SITE_LANGUAGES, type SiteLanguageCode } from "@/lib/languages";
 import { useLanguage } from "./LanguageProvider";
 import { ChevronDownIcon, GlobeIcon } from "./Icons";
 
 export function LanguageSwitcher() {
-  const { lang, setLang } = useLanguage();
+  const { lang, setLang, t } = useLanguage();
 
   return (
-    <label className="relative flex h-9 items-center rounded-full text-charcoal transition-colors hover:bg-cloud">
-      <span className="sr-only">Language</span>
-      <GlobeIcon size={16} className="pointer-events-none absolute start-3" />
+    <label className="relative flex h-9 items-center rounded-full text-charcoal transition-colors hover:bg-black/[0.05]">
+      <span className="sr-only">{t.header.language}</span>
+      <GlobeIcon size={15} className="pointer-events-none absolute start-2.5" />
       <select
         value={lang}
-        onChange={(e) => setLang(e.target.value as LanguageCode)}
-        className="h-9 cursor-pointer appearance-none rounded-full bg-transparent ps-9 pe-8 text-caption font-medium text-graphite outline-offset-2"
+        onChange={(e) => setLang(e.target.value as SiteLanguageCode)}
+        className="h-9 cursor-pointer appearance-none rounded-full bg-transparent ps-8 pe-7 text-[14px] font-medium text-graphite outline-offset-2"
       >
-        {LANGUAGES.map((l) => (
-          <option key={l.code} value={l.code}>
+        {SITE_LANGUAGES.map((l) => (
+          <option key={l.code} value={l.code} label={l.native}>
             {l.native}
-            {l.code !== "en" ? ` · ${l.english}` : ""}
           </option>
         ))}
       </select>
-      <ChevronDownIcon size={14} className="pointer-events-none absolute end-3" />
+      <ChevronDownIcon size={13} className="pointer-events-none absolute end-2.5" />
     </label>
   );
 }

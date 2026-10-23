@@ -1,11 +1,27 @@
-// Two interlocking halves: messy input in, a clear action out.
-export function LogoMark({ size = 22 }: { size?: number }) {
+import { useId } from "react";
+
+// A faint heartbeat that resolves into a clear check: messy moment in, next right step out.
+// The warm glow in the corner echoes the sunrise in the landscape. Keep in sync with app/icon.svg.
+export function LogoMark({ size = 24 }: { size?: number }) {
+  const id = useId();
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="12" r="11" fill="#2e2e2e" />
-      <path d="M12 1a11 11 0 0 1 0 22 5.5 5.5 0 0 1 0-11 5.5 5.5 0 0 0 0-11Z" fill="#fdfcfb" />
-      <circle cx="12" cy="6.5" r="1.9" fill="#fdfcfb" />
-      <circle cx="12" cy="17.5" r="1.9" fill="#2e2e2e" />
+    <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true" className="shrink-0">
+      <defs>
+        <linearGradient id={`${id}t`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3b3b3b" />
+          <stop offset="1" stopColor="#1f1f1f" />
+        </linearGradient>
+        <radialGradient id={`${id}g`} cx="27" cy="5" r="17" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#f4a66d" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#f4a66d" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <rect width="32" height="32" rx="9" fill={`url(#${id}t)`} />
+      <rect width="32" height="32" rx="9" fill={`url(#${id}g)`} />
+      <g fill="none" stroke="#fdfcfb" strokeLinecap="round" strokeLinejoin="round" transform="translate(0 .5)">
+        <path d="M5 17H9l2.5-6 2.4 6" strokeOpacity="0.45" strokeWidth="2.4" />
+        <path d="M13.9 17l1.6 4L26.5 10" strokeWidth="2.6" />
+      </g>
     </svg>
   );
 }
@@ -14,7 +30,7 @@ export function Wordmark() {
   return (
     <span className="flex items-center gap-2">
       <LogoMark />
-      <span className="text-lead font-semibold tracking-[-0.02em]">LifeSync</span>
+      <span className="font-display text-[17px] font-semibold tracking-[-0.025em] text-graphite">LifeSync</span>
     </span>
   );
 }
