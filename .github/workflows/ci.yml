@@ -33,7 +33,7 @@ jobs:
       - name: Unit, component and property tests (coverage thresholds enforced)
         run: npm run test:coverage
       - run: npm run build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: coverage
@@ -55,7 +55,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       # No Gemini key in CI: the examples fall back to their sample cards, so no secrets are needed.
       - run: npm run test:e2e
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
