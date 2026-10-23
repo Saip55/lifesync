@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import QRCode from "qrcode";
 import type { HealthCard as HealthCardData } from "@/lib/schema";
 import { AlertIcon, PrinterIcon } from "./Icons";
 import { useLanguage } from "./LanguageProvider";
@@ -20,9 +19,10 @@ function qrText(card: HealthCardData) {
   return lines.join("\n").slice(0, 700);
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+// One term and its value. The wrapper div is the only element allowed between <dl> and <dt>/<dd>.
+function Field({ label, children, wide = false }: { label: string; children: React.ReactNode; wide?: boolean }) {
   return (
-    <div>
+    <div className={wide ? "col-span-2" : undefined}>
       <dt className="text-utility font-medium uppercase tracking-[0.06em] text-quiet">{label}</dt>
       <dd className="mt-1 text-caption text-graphite">{children}</dd>
     </div>
@@ -33,10 +33,16 @@ export function HealthCard({ card }: { card: HealthCardData }) {
   const [qr, setQr] = useState<string | null>(null);
   const h = useLanguage().t.health;
 
+  // The QR library is loaded only when a card actually has health details.
   useEffect(() => {
-    QRCode.toDataURL(qrText(card), { margin: 1, width: 280, color: { dark: "#2e2e2e", light: "#fdfcfb" } })
-      .then(setQr)
-      .catch(() => setQr(null));
+    let current = true;
+    import("qrcode")
+      .then(({ toDataURL }) => toDataURL(qrText(card), { margin: 1, width: 280, color: { dark: "#2e2e2e", light: "#fdfcfb" } }))
+      .then((url) => current && setQr(url))
+      .catch(() => current && setQr(null));
+    return () => {
+      current = false;
+    };
   }, [card]);
 
   return (
@@ -45,7 +51,7 @@ export function HealthCard({ card }: { card: HealthCardData }) {
         <div>
           <p className="text-utility font-medium uppercase tracking-[0.06em] text-quiet">{h.title}</p>
           <h3 id="health-card-title" className="font-display text-card font-medium tracking-[-0.01em]">
-            {card.name}
+            {card.name || h.title}
           </h3>
         </div>
         <button
@@ -60,20 +66,29 @@ export function HealthCard({ card }: { card: HealthCardData }) {
 
       <div className="grid gap-5 p-5 sm:grid-cols-[1fr_auto]">
         <dl className="grid grid-cols-2 gap-x-6 gap-y-4">
-          <Field label={h.age}>{card.age}</Field>
-          <Field label={h.blood}>{card.blood_group}</Field>
-          <div className="col-span-2">
-            <Field label={h.conditions}>{card.conditions.join(", ") || h.none}</Field>
-          </div>
+          <Field label={h.age}>{card.age || "—"}</Field>
+          <Field label={h.blood}>{card.blood_group || "—"}</Field>
+          <Field label={h.conditions} wide>
+            {card.conditions.join(", ") || h.none}
+          </Field>
           <div className="col-span-2">
             <dt className="text-utility font-medium uppercase tracking-[0.06em] text-quiet">{h.medicines}</dt>
             <dd className="mt-1.5">
               <table className="w-full text-caption">
+                <thead className="sr-only">
+                  <tr>
+                    <th scope="col">{h.medicines}</th>
+                    <th scope="col">{h.dose}</th>
+                    <th scope="col">{h.frequency}</th>
+                  </tr>
+                </thead>
                 <tbody>
                   {card.medicines.map((m, i) => (
                     <tr key={i} className="border-t border-hairline first:border-t-0">
-                      <td className="py-1.5 pe-3 font-medium text-graphite">{m.name}</td>
-                      <td className="py-1.5 pe-3 font-mono text-[13px] text-charcoal">{m.dose}</td>
+                      <th scope="row" className="py-1.5 pe-3 text-start font-medium text-graphite">
+                        {m.name}
+                      </th>
+                      <td className="py-1.5 pe-3 font-mono text-[0.8125rem] text-charcoal">{m.dose}</td>
                       <td className="py-1.5 text-quiet">{m.frequency}</td>
                     </tr>
                   ))}
@@ -81,9 +96,9 @@ export function HealthCard({ card }: { card: HealthCardData }) {
               </table>
             </dd>
           </div>
-          <div className="col-span-2">
-            <Field label={h.allergies}>{card.allergies.join(", ") || h.none}</Field>
-          </div>
+          <Field label={h.allergies} wide>
+            {card.allergies.join(", ") || h.none}
+          </Field>
         </dl>
 
         <div className="flex flex-col items-center gap-2 sm:w-36">
@@ -91,7 +106,7 @@ export function HealthCard({ card }: { card: HealthCardData }) {
             // eslint-disable-next-line @next/next/no-img-element -- data URL, nothing to optimise
             <img src={qr} alt={h.qrAlt} width={144} height={144} className="rounded-badge" />
           ) : (
-            <div className="size-36 rounded-badge bg-board" />
+            <div className="size-36 animate-breathe rounded-badge bg-board" aria-hidden="true" />
           )}
           <p className="text-center text-utility text-quiet">{h.scan}</p>
         </div>

@@ -1,10 +1,11 @@
 "use client";
 
 import { fill } from "@/lib/i18n";
+import type { Stage } from "@/lib/schema";
 import { useLanguage } from "./LanguageProvider";
 import { CheckIcon } from "./Icons";
 
-export function ProgressStrip({ stage }: { stage: number }) {
+export function ProgressStrip({ stage }: { stage: Stage }) {
   const w = useLanguage().t.workspace;
   const STAGES = w.stages;
   return (

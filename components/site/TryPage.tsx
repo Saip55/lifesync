@@ -20,7 +20,7 @@ export function TryPage() {
   }, []);
 
   return (
-    <main id="top" className="relative isolate">
+    <main id="main" tabIndex={-1} className="relative isolate outline-none">
       <div
         aria-hidden="true"
         className="absolute inset-x-0 top-0 -z-10 h-[520px] animate-fade bg-[radial-gradient(55%_70%_at_80%_0%,rgba(244,166,109,0.14),transparent_70%),radial-gradient(45%_60%_at_5%_0%,rgba(150,171,138,0.14),transparent_70%)]"
@@ -29,14 +29,14 @@ export function TryPage() {
       <section className="mx-auto max-w-[1240px] px-4 pt-10 pb-8 sm:px-6 sm:pt-14 sm:pb-10">
         <div className="grid items-end gap-8 lg:grid-cols-[1fr_auto] lg:gap-16">
           <div key={lang}>
-            <p className="flex w-fit animate-rise items-center gap-2 rounded-full border border-hairline bg-canvas/80 py-1 ps-2 pe-3 text-[13px] font-medium text-charcoal shadow-seg">
+            <p className="flex w-fit animate-rise items-center gap-2 rounded-full border border-hairline bg-canvas/80 py-1 ps-2 pe-3 text-[0.8125rem] font-medium text-charcoal shadow-seg">
               <span className="size-2 animate-pulse-ring rounded-full bg-sage-ink" aria-hidden="true" />
               {p.eyebrow}
             </p>
-            <h1 className="mt-5 animate-word font-display text-[34px] leading-[1.1] font-medium tracking-[-0.035em] text-graphite sm:text-[46px]">
+            <h1 className="mt-5 animate-word font-display text-[2.125rem] leading-[1.1] font-medium tracking-[-0.035em] text-graphite sm:text-[2.875rem]">
               {p.title}
             </h1>
-            <p className="mt-4 max-w-[600px] animate-rise text-lead leading-[28px] text-charcoal" style={{ animationDelay: "120ms" }}>
+            <p className="mt-4 max-w-[600px] animate-rise text-lead leading-[1.75rem] text-charcoal" style={{ animationDelay: "120ms" }}>
               {p.body}
             </p>
           </div>
@@ -76,7 +76,7 @@ export function TryPage() {
 
       <section className="mx-auto max-w-[1240px] px-4 pt-20 pb-24 sm:px-6 sm:pt-24">
         <Reveal>
-          <h2 className="font-display text-[26px] font-medium tracking-[-0.02em] text-graphite">{p.goodToKnow}</h2>
+          <h2 className="font-display text-[1.625rem] font-medium tracking-[-0.02em] text-graphite">{p.goodToKnow}</h2>
         </Reveal>
         <div className="mt-6 grid gap-3 md:grid-cols-3">
           {p.faq.map((f, i) => {

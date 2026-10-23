@@ -14,6 +14,7 @@ import {
   Noto_Sans_Telugu,
 } from "next/font/google";
 import { LanguageProvider } from "@/components/LanguageProvider";
+import { SkipLink } from "@/components/site/SkipLink";
 import { LANG_STORAGE_KEY } from "@/lib/i18n";
 import { SITE_LANGUAGES } from "@/lib/languages";
 import "./globals.css";
@@ -64,7 +65,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: LANG_SCRIPT }} />
       </head>
       <body className="min-h-dvh">
-        <LanguageProvider>{children}</LanguageProvider>
+        <LanguageProvider>
+          <SkipLink />
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

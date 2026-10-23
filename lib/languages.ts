@@ -14,13 +14,19 @@ export const LANGUAGES = [
   { code: "pa", english: "Punjabi", native: "ਪੰਜਾਬੀ", dir: "ltr" },
 ] as const;
 
+export type LanguageCode = (typeof LANGUAGES)[number]["code"];
+
+export const isLanguageCode = (code: string | null | undefined): code is LanguageCode => LANGUAGES.some((l) => l.code === code);
+
 export function getLanguage(code: string) {
   return LANGUAGES.find((l) => l.code === code) ?? LANGUAGES[0];
 }
 
 // The site itself is fully translated into the six most widely spoken of these.
-export const SITE_LANGUAGES = LANGUAGES.filter((l) => ["en", "hi", "bn", "mr", "te", "ta"].includes(l.code));
 export type SiteLanguageCode = "en" | "hi" | "bn" | "mr" | "te" | "ta";
+const SITE_CODES: readonly string[] = ["en", "hi", "bn", "mr", "te", "ta"] satisfies SiteLanguageCode[];
+type SiteLanguage = Extract<(typeof LANGUAGES)[number], { code: SiteLanguageCode }>;
+export const SITE_LANGUAGES = LANGUAGES.filter((l): l is SiteLanguage => SITE_CODES.includes(l.code));
 
 export const isSiteLanguage = (code: string | null | undefined): code is SiteLanguageCode =>
   SITE_LANGUAGES.some((l) => l.code === code);

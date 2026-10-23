@@ -20,7 +20,7 @@ export function Hero() {
       />
       <div className="mx-auto grid max-w-[1240px] items-center gap-12 px-4 pt-12 pb-16 sm:px-6 sm:pt-16 lg:grid-cols-[1.08fr_1fr] lg:gap-14 lg:pt-20 lg:pb-24">
         <div className="flex flex-col items-start">
-          <p className="flex animate-rise items-center gap-2.5 rounded-full border border-hairline bg-canvas/80 py-1.5 ps-2.5 pe-3.5 text-[13px] font-medium text-charcoal shadow-seg backdrop-blur">
+          <p className="flex animate-rise items-center gap-2.5 rounded-full border border-hairline bg-canvas/80 py-1.5 ps-2.5 pe-3.5 text-[0.8125rem] font-medium text-charcoal shadow-seg backdrop-blur">
             <span className="size-2 animate-pulse-ring rounded-full bg-sage-ink" aria-hidden="true" />
             {h.eyebrow}
           </p>
@@ -28,7 +28,7 @@ export function Hero() {
           {/* key replays the reveal when the language changes */}
           <h1
             key={lang}
-            className="mt-7 font-display text-[38px] leading-[1.08] font-medium tracking-[-0.04em] text-graphite [font-variation-settings:'opsz'_96] sm:text-[54px] xl:text-[62px]"
+            className="mt-7 font-display text-[2.375rem] leading-[1.08] font-medium tracking-[-0.04em] text-graphite [font-variation-settings:'opsz'_96] sm:text-[3.375rem] xl:text-[3.875rem]"
           >
             <span className="block animate-word" style={{ animationDelay: "80ms" }}>
               {h.line1}
@@ -41,7 +41,7 @@ export function Hero() {
             </span>
           </h1>
 
-          <p className="mt-6 max-w-[540px] animate-rise text-lead leading-[28px] text-charcoal" style={{ animationDelay: "420ms" }}>
+          <p className="mt-6 max-w-[540px] animate-rise text-lead leading-[1.75rem] text-charcoal" style={{ animationDelay: "420ms" }}>
             {h.body}
           </p>
 
@@ -93,7 +93,7 @@ function AskIn({ label, more }: { label: string; more: string }) {
       <span
         key={l.code}
         lang={l.code}
-        className="inline-block min-w-[4.5em] animate-word font-display text-[20px] font-medium tracking-[-0.01em] text-graphite"
+        className="inline-block min-w-[4.5em] animate-word font-display text-[1.25rem] font-medium tracking-[-0.01em] text-graphite"
       >
         {l.native}
       </span>

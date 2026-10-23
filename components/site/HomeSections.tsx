@@ -18,13 +18,13 @@ function SectionHeading({ title, body, tone = "light" }: { title: string; body: 
   return (
     <div className="max-w-[640px]">
       <h2
-        className={`font-display text-[32px] leading-[1.15] font-medium tracking-[-0.03em] sm:text-[42px] ${
+        className={`font-display text-[2rem] leading-[1.15] font-medium tracking-[-0.03em] sm:text-[2.625rem] ${
           tone === "dark" ? "text-canvas" : "text-graphite"
         }`}
       >
         {title}
       </h2>
-      <p className={`mt-4 text-lead leading-[28px] ${tone === "dark" ? "text-dusk-text" : "text-charcoal"}`}>{body}</p>
+      <p className={`mt-4 text-lead leading-[1.75rem] ${tone === "dark" ? "text-dusk-text" : "text-charcoal"}`}>{body}</p>
     </div>
   );
 }
@@ -128,7 +128,7 @@ export function HomeSections() {
               {EMERGENCY_NUMBERS.map((e) => (
                 <li key={e.number}>
                   <a href={`tel:${e.number}`} className="group block">
-                    <span className="block font-display text-[30px] leading-none font-medium tracking-[-0.02em] text-canvas transition-colors group-hover:text-sun">
+                    <span className="block font-display text-[1.875rem] leading-none font-medium tracking-[-0.02em] text-canvas transition-colors group-hover:text-sun">
                       {e.number}
                     </span>
                     <span className="mt-1.5 block text-utility text-dusk-text">{t.safety.numbers[e.number]}</span>
@@ -150,10 +150,10 @@ export function HomeSections() {
         <Reveal className="relative isolate overflow-hidden rounded-[28px] px-5 pt-16 pb-40 text-center sm:pt-20 sm:pb-56">
           <Landscape />
           <div className="relative">
-            <h2 className="mx-auto max-w-[620px] font-display text-[34px] leading-[1.15] font-medium tracking-[-0.03em] text-graphite sm:text-[48px]">
+            <h2 className="mx-auto max-w-[620px] font-display text-[2.125rem] leading-[1.15] font-medium tracking-[-0.03em] text-graphite sm:text-[3rem]">
               {t.cta.title}
             </h2>
-            <p className="mx-auto mt-4 max-w-[520px] text-lead leading-[28px] text-charcoal">{t.cta.body}</p>
+            <p className="mx-auto mt-4 max-w-[520px] text-lead leading-[1.75rem] text-charcoal">{t.cta.body}</p>
             <Link
               href="/try"
               className="group mt-8 inline-flex items-center gap-2 rounded-full bg-graphite px-7 py-3.5 text-body font-semibold text-canvas transition-colors hover:bg-graphite-hover"

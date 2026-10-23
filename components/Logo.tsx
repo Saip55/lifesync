@@ -30,7 +30,7 @@ export function Wordmark() {
   return (
     <span className="flex items-center gap-2">
       <LogoMark />
-      <span className="font-display text-[17px] font-semibold tracking-[-0.025em] text-graphite">LifeSync</span>
+      <span className="font-display text-[1.0625rem] font-semibold tracking-[-0.025em] text-graphite">LifeSync</span>
     </span>
   );
 }

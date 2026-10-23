@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState, type ReactNode } from "react";
 import type { AnalyzeResult, Fact } from "@/lib/schema";
 import { telHref } from "@/lib/client/actions";
+import { planText } from "@/lib/client/summary";
 import { RISK_STYLES } from "./risk";
 import { ActionButton } from "./ActionButton";
 import { HealthCard } from "./HealthCard";
@@ -14,6 +15,7 @@ import {
   ChevronDownIcon,
   CopyIcon,
   ExternalIcon,
+  MessageIcon,
   PhoneIcon,
   QuestionIcon,
   ShieldIcon,
@@ -26,25 +28,54 @@ const FACT_CHIP: Record<Fact["status"], { className: string; Icon: typeof CheckI
   contradicted: { className: "bg-critical-soft text-critical", Icon: XIcon },
 };
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
+function SectionLabel({ children }: { children: ReactNode }) {
   return <h3 className="mb-3 text-caption font-semibold text-graphite">{children}</h3>;
 }
+
+type Notice = "" | "correction" | "plan";
 
 export function ActionCard({ result }: { result: AnalyzeResult }) {
   const { card, verified, sources, signals } = result;
   const risk = RISK_STYLES[card.risk_level];
-  const [copied, setCopied] = useState(false);
+  const [notice, setNotice] = useState<Notice>("");
   const c = useLanguage().t.card;
+  const confidenceId = useId();
 
-  const copyCorrection = async () => {
-    if (!card.rumor_verdict) return;
-    await navigator.clipboard.writeText(card.rumor_verdict.correction);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const flash = (what: Notice) => {
+    setNotice(what);
+    window.setTimeout(() => setNotice(""), 2500);
+  };
+
+  // The clipboard can be blocked (permissions, insecure context); then there is simply no "copied" note.
+  const copy = async (text: string, what: Notice) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      flash(what);
+    } catch {
+      // Nothing to undo.
+    }
+  };
+
+  // The phone's share sheet where there is one (WhatsApp, SMS, email); otherwise the clipboard.
+  const share = async () => {
+    const text = planText(result, c);
+    if ("share" in navigator) {
+      try {
+        await navigator.share({ title: "LifeSync", text });
+        return;
+      } catch (e) {
+        if (e instanceof DOMException && e.name === "AbortError") return;
+      }
+    }
+    await copy(text, "plan");
   };
 
   return (
     <article lang={card.language_code} className="animate-rise space-y-6" aria-label={c.aria}>
+      <p role="status" className="sr-only">
+        {notice === "plan" ? c.shareCopied : notice === "correction" ? c.copied : ""}
+      </p>
+
       {/* Risk banner */}
       <div className={`rounded-card border-s-4 ${risk.bar} ${risk.soft} p-4 sm:p-5`}>
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -70,21 +101,26 @@ export function ActionCard({ result }: { result: AnalyzeResult }) {
 
       {/* Summary + confidence */}
       <div>
-        <p className="text-card font-medium leading-snug text-graphite">{card.situation}</p>
+        <p className="text-card leading-snug font-medium text-graphite">{card.situation}</p>
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
           <div className="flex min-w-48 flex-1 items-center gap-3">
-            <span className="text-caption text-quiet">{c.confidence}</span>
+            <span className="text-caption text-quiet" id={confidenceId}>
+              {c.confidence}
+            </span>
             <span
               className="h-1.5 flex-1 overflow-hidden rounded-full bg-black/[0.07]"
               role="meter"
               aria-valuemin={0}
               aria-valuemax={100}
               aria-valuenow={card.confidence}
-              aria-label={c.confidence}
+              aria-valuetext={`${card.confidence}%`}
+              aria-labelledby={confidenceId}
             >
               <span className="block h-full rounded-full bg-graphite" style={{ width: `${card.confidence}%` }} />
             </span>
-            <span className="font-mono text-[13px] text-graphite">{card.confidence}%</span>
+            <span className="font-mono text-[0.8125rem] text-graphite" aria-hidden="true">
+              {card.confidence}%
+            </span>
           </div>
           {verified ? (
             <span className="flex items-center gap-1.5 text-caption font-medium text-low">
@@ -95,14 +131,26 @@ export function ActionCard({ result }: { result: AnalyzeResult }) {
               <AlertIcon size={16} /> {c.notVerified}
             </span>
           )}
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-1">
           <ReadAloud text={card.spoken_summary} lang={card.language_code} />
+          <button
+            type="button"
+            onClick={() => void share()}
+            className="flex h-10 items-center gap-1.5 rounded-full px-3 text-caption font-medium text-charcoal transition-colors hover:bg-cloud"
+          >
+            {notice === "plan" ? <CheckIcon size={16} /> : <MessageIcon size={16} />}
+            {notice === "plan" ? c.shareCopied : c.share}
+          </button>
         </div>
       </div>
 
       {/* Rumour verdict */}
       {card.rumor_verdict && (
-        <div className="rounded-card border border-hairline bg-canvas p-5">
-          <p className="text-utility font-medium uppercase tracking-[0.06em] text-quiet">{c.verdictTitle}</p>
+        <section className="rounded-card border border-hairline bg-canvas p-5" aria-labelledby="verdict-title">
+          <h3 id="verdict-title" className="text-utility font-medium tracking-[0.06em] text-quiet uppercase">
+            {c.verdictTitle}
+          </h3>
           <p
             className={`mt-1 font-display text-section font-medium ${
               card.rumor_verdict.verdict === "true" ? "text-low" : card.rumor_verdict.verdict === "unverifiable" ? "text-quiet" : "text-critical"
@@ -113,13 +161,13 @@ export function ActionCard({ result }: { result: AnalyzeResult }) {
           <p className="mt-2 text-body text-charcoal">{card.rumor_verdict.correction}</p>
           <button
             type="button"
-            onClick={copyCorrection}
-            className="mt-4 flex h-10 items-center gap-2 rounded-full bg-graphite px-5 text-caption font-semibold text-canvas transition-colors hover:bg-graphite-hover"
+            onClick={() => void copy(card.rumor_verdict?.correction ?? "", "correction")}
+            className="mt-4 flex h-11 items-center gap-2 rounded-full bg-graphite px-5 text-caption font-semibold text-canvas transition-colors hover:bg-graphite-hover"
           >
-            {copied ? <CheckIcon size={16} /> : <CopyIcon size={16} />}
-            {copied ? c.copied : c.copy}
+            {notice === "correction" ? <CheckIcon size={16} /> : <CopyIcon size={16} />}
+            {notice === "correction" ? c.copied : c.copy}
           </button>
-        </div>
+        </section>
       )}
 
       {/* Actions */}
@@ -144,9 +192,7 @@ export function ActionCard({ result }: { result: AnalyzeResult }) {
                 const chip = FACT_CHIP[f.status];
                 return (
                   <li key={i} className="p-4">
-                    <span
-                      className={`inline-flex items-center gap-1 rounded-badge px-1.5 py-0.5 text-utility font-medium ${chip.className}`}
-                    >
+                    <span className={`inline-flex items-center gap-1 rounded-badge px-1.5 py-0.5 text-utility font-medium ${chip.className}`}>
                       <chip.Icon size={12} strokeWidth={2.2} />
                       {c.facts[f.status]}
                     </span>
@@ -175,7 +221,7 @@ export function ActionCard({ result }: { result: AnalyzeResult }) {
                       <span className="block text-caption font-semibold text-graphite">{ct.name}</span>
                       <span className="block text-utility text-quiet">{ct.why}</span>
                     </span>
-                    <span className="flex items-center gap-1.5 font-mono text-[15px] font-medium text-graphite">
+                    <span className="flex items-center gap-1.5 font-mono text-[0.9375rem] font-medium text-graphite" dir="ltr">
                       <PhoneIcon size={15} />
                       {ct.number}
                     </span>
@@ -207,33 +253,36 @@ export function ActionCard({ result }: { result: AnalyzeResult }) {
 
       {/* Sources and signals */}
       <details className="group rounded-card border border-hairline bg-canvas">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-2 p-4 text-caption font-semibold text-graphite">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 p-4 text-caption font-semibold text-graphite">
           {c.signals}
           <ChevronDownIcon size={16} className="text-quiet transition-transform group-open:rotate-180" />
         </summary>
         <div className="space-y-5 border-t border-hairline p-4">
           {signals.length > 0 && (
             <dl className="grid gap-2 sm:grid-cols-[120px_1fr]">
-              {signals.map((s, i) => (
-                <div key={i} className="contents">
-                  <dt className="text-utility font-medium text-quiet">{s.label}</dt>
-                  <dd className="text-caption text-graphite">{s.value}</dd>
+              {signals.map((s) => (
+                <div key={s.key} className="contents">
+                  <dt className="text-utility font-medium text-quiet">{c.signalLabels[s.key]}</dt>
+                  <dd className="text-caption text-graphite" lang="en">
+                    {s.value}
+                  </dd>
                 </div>
               ))}
             </dl>
           )}
           {sources.length > 0 && (
             <ul className="space-y-1.5">
-              {sources.map((s, i) => (
-                <li key={i}>
+              {sources.map((s) => (
+                <li key={s.url}>
                   <a
                     href={s.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-caption font-medium text-research hover:underline"
+                    className="inline-flex items-center gap-1.5 text-caption font-medium text-research underline-offset-2 hover:underline"
                   >
                     {s.title}
                     <ExternalIcon size={13} />
+                    <span className="sr-only">{c.newTab}</span>
                   </a>
                 </li>
               ))}
@@ -242,9 +291,9 @@ export function ActionCard({ result }: { result: AnalyzeResult }) {
           {card.critic_notes.length > 0 && (
             <div>
               <p className="text-utility font-medium text-quiet">{c.notes}</p>
-              <ul className="mt-1 space-y-1">
+              <ul className="mt-1 space-y-1" lang="en">
                 {card.critic_notes.map((n, i) => (
-                  <li key={i} className="font-mono text-[13px] leading-[1.6] text-charcoal">
+                  <li key={i} className="font-mono text-[0.8125rem] leading-[1.6] text-charcoal">
                     — {n}
                   </li>
                 ))}

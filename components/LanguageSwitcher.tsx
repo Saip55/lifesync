@@ -14,10 +14,10 @@ export function LanguageSwitcher() {
       <select
         value={lang}
         onChange={(e) => setLang(e.target.value as SiteLanguageCode)}
-        className="h-9 cursor-pointer appearance-none rounded-full bg-transparent ps-8 pe-7 text-[14px] font-medium text-graphite outline-offset-2"
+        className="h-9 cursor-pointer appearance-none rounded-full bg-transparent ps-8 pe-7 text-[0.875rem] font-medium text-graphite outline-offset-2"
       >
         {SITE_LANGUAGES.map((l) => (
-          <option key={l.code} value={l.code} label={l.native}>
+          <option key={l.code} value={l.code} label={l.native} lang={l.code}>
             {l.native}
           </option>
         ))}

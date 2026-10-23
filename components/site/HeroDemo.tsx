@@ -82,7 +82,7 @@ export function HeroDemo() {
 
           <InputChip done={at(1)} className="sm:ms-5">
             <span className="relative block h-11 w-9 shrink-0 rounded-[3px] bg-[#fffdf8] p-1 shadow-[0_0_0_1px_rgba(0,0,0,0.08)]">
-              <span className="block font-display text-[9px] leading-none font-semibold text-sky-ink">Rx</span>
+              <span className="block font-display text-[0.5625rem] leading-none font-semibold text-sky-ink">Rx</span>
               <span className="mt-1 block h-[2px] w-6 rounded bg-graphite/30" />
               <span className="mt-1 block h-[2px] w-4 rounded bg-graphite/30" />
               <span className="mt-1 block h-[2px] w-5 rounded bg-graphite/30" />

@@ -1,15 +1,16 @@
 import "server-only";
 import { getLanguage, LANGUAGES } from "@/lib/languages";
+import type { ErrorCode } from "@/lib/schema";
+import { AUDIO, IMAGE_OR_PDF, readPlainText, sniffType, type SniffedType } from "./sniff";
 
 // Vercel caps request bodies at 4.5 MB; leave headroom for form encoding.
 export const MAX_BODY_BYTES = 4_400_000;
+const MAX_FORM_BYTES = MAX_BODY_BYTES + 200_000;
 const MAX_FILES = 6;
 const MAX_TEXT = 8_000;
+const MAX_NAME = 80;
 
-const FILE_TYPES = /^(image\/(jpeg|png|webp|heic|heif)|application\/pdf|text\/plain)$/;
-const AUDIO_TYPES = /^audio\/(webm|ogg|mp4|mpeg|wav|aac|x-m4a)$/;
-
-export type Blob64 = { name: string; mimeType: string; data: string };
+export type Blob64 = { name: string; mimeType: SniffedType; data: string };
 
 export type AnalyzeInput = {
   text: string;
@@ -23,53 +24,107 @@ export type AnalyzeInput = {
 
 export class InputError extends Error {
   constructor(
-    readonly code: "no_input" | "too_large" | "bad_file",
+    readonly code: Extract<ErrorCode, "no_input" | "too_large" | "bad_file">,
     message: string
   ) {
     super(message);
+    this.name = "InputError";
   }
 }
 
-const baseType = (t: string) => t.split(";")[0]?.trim().toLowerCase() ?? "";
+const tooLarge = () => new InputError("too_large", "That’s too much to send at once. Try fewer or smaller files (4 MB total).");
+const unreadable = () => new InputError("bad_file", "That request couldn’t be read. Please try again.");
+
+/** Buffers at most MAX_FORM_BYTES of a multipart body, so an oversized upload is refused as it streams in. */
+export async function readForm(req: Request): Promise<FormData> {
+  const type = req.headers.get("content-type") ?? "";
+  if (!/^multipart\/form-data;/i.test(type)) throw unreadable();
+  if (Number(req.headers.get("content-length") ?? 0) > MAX_FORM_BYTES) throw tooLarge();
+
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  if (req.body) {
+    const reader = req.body.getReader();
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > MAX_FORM_BYTES) {
+        await reader.cancel();
+        throw tooLarge();
+      }
+      chunks.push(value);
+    }
+  }
+  try {
+    return await new Response(Buffer.concat(chunks), { headers: { "content-type": type } }).formData();
+  } catch {
+    throw unreadable();
+  }
+}
+
+const isFile = (v: FormDataEntryValue | null): v is File => v instanceof File && v.size > 0;
+
+// File names reach the prompt, so keep them short and free of control and markup characters.
+const safeName = (name: string) => name.replace(/[\u0000-\u001f\u007f<>"`]/g, "").trim().slice(0, MAX_NAME) || "file";
 
 const num = (v: FormDataEntryValue | null, min: number, max: number) => {
-  const n = typeof v === "string" ? Number(v) : NaN;
+  const n = typeof v === "string" && v.trim() ? Number(v) : NaN;
   return Number.isFinite(n) && n >= min && n <= max ? n : null;
 };
 
-async function toBase64(f: File): Promise<Blob64> {
-  return { name: f.name, mimeType: baseType(f.type), data: Buffer.from(await f.arrayBuffer()).toString("base64") };
-}
+const isOneOf = <T extends string>(list: readonly T[], v: string | null): v is T => v !== null && (list as readonly string[]).includes(v);
 
 export async function parseForm(form: FormData): Promise<AnalyzeInput> {
-  const text = String(form.get("text") ?? "").slice(0, MAX_TEXT).trim();
-  const uploads = form.getAll("files").filter((f): f is File => f instanceof File && f.size > 0);
+  const text = String(form.get("text") ?? "").trim().slice(0, MAX_TEXT);
+  const uploads = form.getAll("files").filter(isFile);
   const audioEntry = form.get("audio");
-  const audio = audioEntry instanceof File && audioEntry.size > 0 ? audioEntry : null;
+  const audio = isFile(audioEntry) ? audioEntry : null;
 
   if (!text && uploads.length === 0 && !audio) throw new InputError("no_input", "Add a few words, a photo, or a voice note first.");
   if (uploads.length > MAX_FILES) throw new InputError("too_large", `Attach up to ${MAX_FILES} files at a time.`);
   const total = uploads.reduce((n, f) => n + f.size, 0) + (audio?.size ?? 0);
   if (total > MAX_BODY_BYTES) throw new InputError("too_large", "Those files are too large together. Try fewer photos or a smaller PDF (4 MB total).");
 
+  // Each file is identified by its bytes. Plain text has no signature, so it must also be declared as text.
+  const files: Blob64[] = [];
+  const docs: AnalyzeInput["docs"] = [];
   for (const f of uploads) {
-    if (!FILE_TYPES.test(baseType(f.type))) throw new InputError("bad_file", `${f.name} isn’t supported. Use photos, PDFs or plain text.`);
+    const bytes = new Uint8Array(await f.arrayBuffer());
+    const name = safeName(f.name);
+    const type = sniffType(bytes);
+    if (isOneOf(IMAGE_OR_PDF, type)) {
+      files.push({ name, mimeType: type, data: Buffer.from(bytes).toString("base64") });
+      continue;
+    }
+    const declaredText = f.type.split(";")[0]?.trim().toLowerCase() === "text/plain" || /\.txt$/i.test(f.name);
+    const plain = type === null && declaredText ? readPlainText(bytes) : null;
+    if (plain === null) throw new InputError("bad_file", `${name} isn’t supported. Use photos, PDFs or plain text.`);
+    docs.push({ name, text: plain.slice(0, MAX_TEXT) });
   }
-  if (audio && !AUDIO_TYPES.test(baseType(audio.type))) throw new InputError("bad_file", "That voice note format isn’t supported. Try recording again.");
 
-  const docs = await Promise.all(uploads.filter((f) => baseType(f.type) === "text/plain").map(async (f) => ({ name: f.name, text: (await f.text()).slice(0, MAX_TEXT) })));
-  const files = await Promise.all(uploads.filter((f) => baseType(f.type) !== "text/plain").map(toBase64));
+  let voice: Blob64 | null = null;
+  if (audio) {
+    const bytes = new Uint8Array(await audio.arrayBuffer());
+    const type = sniffType(bytes);
+    if (!isOneOf(AUDIO, type)) throw new InputError("bad_file", "That voice note format isn’t supported. Try recording again.");
+    voice = { name: "voice note", mimeType: type, data: Buffer.from(bytes).toString("base64") };
+  }
 
   const reply = String(form.get("replyLang") ?? "");
   const known = LANGUAGES.some((l) => l.code === reply);
+  // A location is a pair; half of one is treated as none.
+  const lat = num(form.get("lat"), -90, 90);
+  const lon = num(form.get("lon"), -180, 180);
+  const located = lat !== null && lon !== null;
 
   return {
     text,
-    audio: audio ? await toBase64(audio) : null,
+    audio: voice,
     files,
     docs,
-    lat: num(form.get("lat"), -90, 90),
-    lon: num(form.get("lon"), -180, 180),
+    lat: located ? lat : null,
+    lon: located ? lon : null,
     replyLanguage: known ? getLanguage(reply).english : null,
   };
 }

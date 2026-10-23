@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
-/* LifeSync design tokens — "sunlit research desk": warm paper surfaces,
+/* Type sizes are in rem so they follow the reader's own browser text size.
+   LifeSync design tokens — "sunlit research desk": warm paper surfaces,
    graphite controls, one isolated blue for references. */
 @theme {
   --color-canvas: #fdfcfb;
@@ -49,22 +50,22 @@
   --color-info: #1d6fe0;
   --color-info-soft: #e9f1fe;
 
-  --text-utility: 12px;
+  --text-utility: 0.75rem;
   --text-utility--line-height: 1.5;
-  --text-seg: 13px;
+  --text-seg: 0.8125rem;
   --text-seg--line-height: 1;
-  --text-caption: 14px;
+  --text-caption: 0.875rem;
   --text-caption--line-height: 1.5;
-  --text-body: 16px;
+  --text-body: 1rem;
   --text-body--line-height: 1.5;
-  --text-lead: 18px;
+  --text-lead: 1.125rem;
   --text-lead--line-height: 1.5;
-  --text-card: 20px;
+  --text-card: 1.25rem;
   --text-card--line-height: 1.5;
-  --text-section: 36px;
+  --text-section: 2.25rem;
   --text-section--line-height: 1.3;
   --text-section--letter-spacing: -0.015em;
-  --text-hero: 48px;
+  --text-hero: 3rem;
   --text-hero--line-height: 1.3;
   --text-hero--letter-spacing: -0.033em;
 
@@ -231,6 +232,26 @@
   }
   summary::-webkit-details-marker {
     display: none;
+  }
+}
+
+/* Windows High Contrast and other forced-colour modes drop backgrounds and shadows.
+   Keep every control, card edge and the risk bar visible with system colours. */
+@media (forced-colors: active) {
+  button,
+  a,
+  select,
+  textarea,
+  [role="meter"],
+  article > div:first-child {
+    border: 1px solid CanvasText;
+  }
+  [role="meter"] > span {
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+  :focus-visible {
+    outline: 3px solid Highlight;
   }
 }
 

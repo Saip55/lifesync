@@ -1,7 +1,7 @@
 import type { AnalyzeResult } from "./schema";
 
-// Demo scenarios: prefill text for the input panel, plus a sample result the
-// UI shows in design-preview mode until /api/analyze is wired up.
+// Demo scenarios: prefill text for the input panel, plus a sample result shown when the
+// server has no Gemini key, so the examples still work in a keyless preview deployment.
 
 export type Scenario = {
   id: "medical" | "flood" | "rumour";
@@ -27,8 +27,8 @@ export const SCENARIOS: Scenario[] = [
         { title: "Warning signs of a heart attack (WHO)", url: "https://www.who.int/" },
       ],
       signals: [
-        { label: "Language", value: "Hindi (auto-detected)" },
-        { label: "Inputs", value: "Text · 1 photo" },
+        { key: "language", value: "Hindi (auto-detected)" },
+        { key: "inputs", value: "Text · 1 photo" },
       ],
       card: {
         situation:
@@ -135,9 +135,9 @@ export const SCENARIOS: Scenario[] = [
         { title: "NDMA — Floods: do's and don'ts", url: "https://ndma.gov.in/" },
       ],
       signals: [
-        { label: "Weather", value: "Heavy rain · 86% chance next 12h · 48 mm today" },
-        { label: "News", value: "IMD orange alert for the district" },
-        { label: "Language", value: "Marathi (auto-detected)" },
+        { key: "weather", value: "Heavy rain · 86% chance next 12h · 48 mm today" },
+        { key: "news", value: "IMD orange alert for the district" },
+        { key: "language", value: "Marathi (auto-detected)" },
       ],
       card: {
         situation:
@@ -215,8 +215,8 @@ export const SCENARIOS: Scenario[] = [
         { title: "PIB Fact Check", url: "https://pib.gov.in/" },
       ],
       signals: [
-        { label: "News", value: "No reports of a nationwide ATM shutdown" },
-        { label: "Language", value: "English" },
+        { key: "news", value: "No reports of a nationwide ATM shutdown" },
+        { key: "language", value: "English" },
       ],
       card: {
         situation: "A forwarded message claims every ATM in India will shut for 7 days and urges people to withdraw cash today.",

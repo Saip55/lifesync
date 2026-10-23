@@ -77,13 +77,16 @@ export type HealthCard = z.infer<typeof HealthCardSchema>;
 export type RumorVerdict = z.infer<typeof RumorVerdictSchema>;
 export type ActionCard = z.infer<typeof ActionCardSchema>;
 
-// What the API returns alongside the card.
+// What the API returns alongside the card. Signal keys are labelled in the UI language.
+export const SIGNAL_KEYS = ["weather", "news", "traffic", "language", "inputs", "timing"] as const;
+export type SignalKey = (typeof SIGNAL_KEYS)[number];
+export type Signal = { key: SignalKey; value: string };
 export type Source = { title: string; url: string };
 export type AnalyzeResult = {
   card: ActionCard;
   verified: boolean;
   sources: Source[];
-  signals: { label: string; value: string }[];
+  signals: Signal[];
 };
 
 // What each Gemini call must return. Plan adds hints for live data the critic needs;
@@ -101,7 +104,11 @@ export const CriticOutputSchema = z.object({
 });
 
 // Newline-delimited JSON events streamed by POST /api/analyze.
+// Stages: 0 understanding, 1 live data, 2 planning, 3 fact-checking.
+export type Stage = 0 | 1 | 2 | 3;
+export const ERROR_CODES = ["no_input", "too_large", "bad_file", "not_configured", "timeout", "model", "rate_limited", "forbidden"] as const;
+export type ErrorCode = (typeof ERROR_CODES)[number];
 export type StreamEvent =
-  | { type: "stage"; stage: number }
+  | { type: "stage"; stage: Stage }
   | { type: "result"; result: AnalyzeResult }
-  | { type: "error"; code: "no_input" | "too_large" | "bad_file" | "not_configured" | "timeout" | "model"; message: string };
+  | { type: "error"; code: ErrorCode; message: string };

@@ -1,4 +1,5 @@
 import "server-only";
+import { env } from "../env";
 
 // Only runs with GOOGLE_MAPS_KEY and a shared location: finds the nearest matching place
 // (Places Text Search) and the drive time to it with and without traffic (Routes API).
@@ -8,7 +9,7 @@ export type Traffic = { place: string; address: string; withTraffic: number; wit
 type LatLng = { latitude: number; longitude: number };
 
 export async function fetchTraffic(lat: number, lon: number, placeType: string, signal: AbortSignal): Promise<Traffic | null> {
-  const key = process.env.GOOGLE_MAPS_KEY;
+  const key = env().GOOGLE_MAPS_KEY;
   if (!key) return null;
   const origin: LatLng = { latitude: lat, longitude: lon };
 

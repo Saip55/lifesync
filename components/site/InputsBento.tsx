@@ -47,7 +47,7 @@ export function InputsBento() {
             ))}
           </div>
           <div className="relative rounded-[8px] bg-[#fffdf8] p-5 shadow-overlay">
-            <p className="font-display text-[17px] font-semibold text-sage-ink">Rx</p>
+            <p className="font-display text-[1.0625rem] font-semibold text-sage-ink">Rx</p>
             <Scribble w="w-4/5" />
             <Scribble w="w-3/5" />
             <Scribble w="w-11/12" />

@@ -42,11 +42,11 @@ export function UseCases() {
     // Hovering or focusing anywhere in the section pauses the auto-advance (pure CSS, see the progress line).
     <div className="group/cases grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
       <Reveal>
-        <p className="text-[13px] font-semibold tracking-[0.08em] text-sage-ink uppercase">{c.eyebrow}</p>
-        <h2 className="mt-3 max-w-[560px] font-display text-[32px] leading-[1.12] font-medium tracking-[-0.03em] text-graphite sm:text-[42px]">
+        <p className="text-[0.8125rem] font-semibold tracking-[0.08em] text-sage-ink uppercase">{c.eyebrow}</p>
+        <h2 className="mt-3 max-w-[560px] font-display text-[2rem] leading-[1.12] font-medium tracking-[-0.03em] text-graphite sm:text-[2.625rem]">
           {c.title}
         </h2>
-        <p className="mt-4 max-w-[520px] text-lead leading-[28px] text-charcoal">{c.body}</p>
+        <p className="mt-4 max-w-[520px] text-lead leading-[1.75rem] text-charcoal">{c.body}</p>
 
         <div role="tablist" aria-label={c.eyebrow} className="mt-10 border-t border-hairline">
           {c.items.map((it, i) => {
@@ -78,7 +78,7 @@ export function UseCases() {
                   </span>
                   <span className="block text-utility text-quiet">{it.kind}</span>
                 </span>
-                <span className="font-mono text-[12px] text-quiet tabular-nums">0{i + 1}</span>
+                <span className="font-mono text-[0.75rem] text-quiet tabular-nums">0{i + 1}</span>
                 {/* Progress line: when it finishes, the next case opens. */}
                 {on && (
                   <span className="absolute inset-x-0 -bottom-px h-px overflow-hidden bg-transparent" aria-hidden="true">
@@ -114,7 +114,7 @@ export function UseCases() {
           <div key={active} className="space-y-3">
             <div className="animate-rise rounded-card bg-canvas/80 p-5 shadow-seg backdrop-blur">
               <p className="text-utility font-semibold tracking-[0.06em] text-quiet uppercase">{c.youShare}</p>
-              <p className="mt-3 font-display text-[19px] leading-[1.45] tracking-[-0.01em] text-graphite sm:text-[21px]">
+              <p className="mt-3 font-display text-[1.1875rem] leading-[1.45] tracking-[-0.01em] text-graphite sm:text-[1.3125rem]">
                 “{item.input}”
               </p>
               <p className="mt-3 text-utility text-quiet">{item.kind}</p>
@@ -138,7 +138,7 @@ export function UseCases() {
               </p>
 
               <div className="mt-4 flex gap-3">
-                <span className="grid size-7 shrink-0 place-items-center rounded-full bg-graphite text-[12px] font-semibold text-canvas">1</span>
+                <span className="grid size-7 shrink-0 place-items-center rounded-full bg-graphite text-[0.75rem] font-semibold text-canvas">1</span>
                 <div>
                   <p className="text-utility font-medium text-quiet">{c.firstStep}</p>
                   <p className="mt-0.5 text-body font-medium text-graphite">{item.step}</p>

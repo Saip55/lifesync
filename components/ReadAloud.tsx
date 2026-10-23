@@ -44,7 +44,7 @@ export function ReadAloud({ text, lang }: { text: string; lang: string }) {
       type="button"
       onClick={toggle}
       aria-pressed={speaking}
-      className="flex h-8 items-center gap-1.5 rounded-full px-3 text-caption font-medium text-charcoal transition-colors hover:bg-cloud"
+      className="flex h-10 items-center gap-1.5 rounded-full px-3 text-caption font-medium text-charcoal transition-colors hover:bg-cloud"
     >
       {speaking ? <StopIcon size={14} /> : <SpeakerIcon size={16} />}
       {speaking ? c.stop : c.readAloud}

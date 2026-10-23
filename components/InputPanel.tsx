@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type ButtonHTMLAttributes, type ReactNode } from "react";
-import { SITE_LANGUAGES } from "@/lib/languages";
+import { LANGUAGES, SITE_LANGUAGES } from "@/lib/languages";
 import { SCENARIOS, type Scenario } from "@/lib/scenarios";
 import { fill, type Dict } from "@/lib/i18n";
 import { formatSeconds, MAX_RECORDING_SECONDS, useRecorder, type VoiceNote } from "@/lib/client/recordAudio";
@@ -49,7 +49,7 @@ function Step({ n, title, hint, help, children }: { n: number; title: ReactNode;
   return (
     <fieldset className="min-w-0">
       <legend className="flex w-full items-center gap-2.5">
-        <span className="grid size-6 shrink-0 place-items-center rounded-full bg-graphite text-[12px] font-semibold text-canvas">{n}</span>
+        <span className="grid size-6 shrink-0 place-items-center rounded-full bg-graphite text-[0.75rem] font-semibold text-canvas">{n}</span>
         <span className="text-body font-semibold text-graphite">{title}</span>
         {hint && <span className="text-utility text-quiet">· {hint}</span>}
       </legend>
@@ -98,6 +98,7 @@ function Tile({
 export function InputPanel(p: Props) {
   const fileRef = useRef<HTMLInputElement>(null);
   const rec = useRecorder(p.onVoice, () => p.onError("mic"));
+  const otherLanguages = LANGUAGES.filter((l) => !SITE_LANGUAGES.some((s) => s.code === l.code));
   const w = useLanguage().t.workspace;
 
   return (
@@ -115,7 +116,7 @@ export function InputPanel(p: Props) {
           onChange={(e) => p.onText(e.target.value)}
           rows={6}
           placeholder={w.placeholder}
-          className="block min-h-40 w-full resize-y rounded-[14px] border border-hairline bg-canvas p-4 text-body text-graphite shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] transition-[border-color,box-shadow] outline-none placeholder:text-ash focus:border-graphite/40 focus:shadow-[0_0_0_4px_rgba(46,46,46,0.06)] focus-visible:outline-none"
+          className="block min-h-40 w-full resize-y rounded-[14px] border border-tool-border bg-canvas p-4 text-body text-graphite shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] transition-[border-color,box-shadow] placeholder:text-quiet focus:border-graphite focus:shadow-[0_0_0_4px_rgba(26,103,214,0.18)]"
         />
 
         <p className="mt-4 text-utility font-medium text-quiet">{w.examples}</p>
@@ -201,7 +202,7 @@ export function InputPanel(p: Props) {
                   type="button"
                   onClick={() => p.onVoice(null)}
                   aria-label={w.removeVoice}
-                  className="grid size-7 place-items-center rounded-full text-quiet hover:bg-board hover:text-graphite"
+                  className="grid size-10 place-items-center rounded-full text-quiet hover:bg-board hover:text-graphite"
                 >
                   <XIcon size={14} />
                 </button>
@@ -215,14 +216,14 @@ export function InputPanel(p: Props) {
                 ) : (
                   <div className="flex size-16 flex-col items-center justify-center gap-1 rounded-card border border-hairline bg-cloud px-1">
                     <FileIcon size={18} className="text-charcoal" />
-                    <span className="w-full truncate text-center text-[10px] text-quiet">{a.file.name}</span>
+                    <span className="w-full truncate text-center text-[0.625rem] text-quiet">{a.file.name}</span>
                   </div>
                 )}
                 <button
                   type="button"
                   onClick={() => p.onRemoveFile(a.id)}
                   aria-label={fill(w.remove, { name: a.file.name })}
-                  className="absolute -end-1.5 -top-1.5 grid size-6 place-items-center rounded-full bg-graphite text-canvas shadow-ring"
+                  className="absolute -end-1.5 -top-1.5 grid size-6 place-items-center rounded-full bg-graphite text-canvas shadow-ring after:absolute after:-inset-2.5 after:content-['']"
                 >
                   <XIcon size={12} strokeWidth={2.4} />
                 </button>
@@ -238,14 +239,22 @@ export function InputPanel(p: Props) {
             id="reply-lang"
             value={p.replyLang}
             onChange={(e) => p.onReplyLang(e.target.value)}
-            className="h-11 w-full cursor-pointer appearance-none rounded-card border border-hairline bg-canvas ps-3.5 pe-9 text-caption text-graphite transition-colors hover:border-graphite/25"
+            className="h-11 w-full cursor-pointer appearance-none rounded-card border border-tool-border bg-canvas ps-3.5 pe-9 text-caption text-graphite transition-colors hover:border-graphite/40"
           >
             <option value="auto">{w.sameAsInput}</option>
             {SITE_LANGUAGES.map((l) => (
-              <option key={l.code} value={l.code}>
+              <option key={l.code} value={l.code} lang={l.code}>
                 {l.native}
               </option>
             ))}
+            {/* The site is translated into six languages; the card can be written in all twelve. */}
+            <optgroup label={w.moreLanguages}>
+              {otherLanguages.map((l) => (
+                <option key={l.code} value={l.code} lang={l.code}>
+                  {l.native} · {l.english}
+                </option>
+              ))}
+            </optgroup>
           </select>
           <ChevronDownIcon size={15} className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2 text-quiet" />
         </span>

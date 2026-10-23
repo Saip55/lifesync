@@ -1,14 +1,20 @@
 import type { Action } from "@/lib/schema";
 
-const digits = (phone: string) => phone.replace(/[^\d+]/g, "");
+// Only digits and a leading +, so a model-written number can never become a USSD code (*#…#) or a URL.
+const dialable = (phone: string) => phone.trim().replace(/(?!^\+)[^\d]/g, "");
 
 export function telHref(phone: string) {
-  return `tel:${digits(phone)}`;
+  return `tel:${dialable(phone)}`;
+}
+
+// wa.me needs the full international number without "+"; a bare 10-digit Indian mobile gets +91.
+export function whatsappNumber(phone: string) {
+  const d = dialable(phone).replace(/^\+/, "");
+  return /^[6-9]\d{9}$/.test(d) ? `91${d}` : d;
 }
 
 export function whatsappHref(message: string, phone?: string) {
-  const to = phone ? digits(phone).replace(/^\+/, "") : "";
-  return `https://wa.me/${to}?text=${encodeURIComponent(message)}`;
+  return `https://wa.me/${phone ? whatsappNumber(phone) : ""}?text=${encodeURIComponent(message)}`;
 }
 
 export function mapsHref(destination: string) {
@@ -16,21 +22,48 @@ export function mapsHref(destination: string) {
 }
 
 const icsDate = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-const icsText = (s: string) => s.replace(/\\/g, "\\\\").replace(/([,;])/g, "\\$1").replace(/\n/g, "\\n");
+const icsText = (s: string) =>
+  s
+    .replace(/\\/g, "\\\\")
+    .replace(/([,;])/g, "\\$1")
+    .replace(/\r\n|\r|\n/g, "\\n");
 
-// Builds a calendar event with a 5-minute alarm and triggers a download.
-export function downloadReminder(action: Action) {
+const encoder = new TextEncoder();
+
+// RFC 5545: content lines are at most 75 octets; longer ones continue on a line starting with a space.
+// Splits between characters, never inside a multi-byte one (Indic scripts are 3 bytes per character).
+export function foldIcsLine(line: string) {
+  const out: string[] = [];
+  let current = "";
+  let bytes = 0;
+  for (const ch of line) {
+    const size = encoder.encode(ch).length;
+    const limit = out.length === 0 ? 75 : 74;
+    if (bytes + size > limit) {
+      out.push(current);
+      current = "";
+      bytes = 0;
+    }
+    current += ch;
+    bytes += size;
+  }
+  out.push(current);
+  return out.join("\r\n ");
+}
+
+/** A calendar event for the action, with a 5-minute alarm. */
+export function reminderIcs(action: Action, now = new Date()) {
   const parsed = action.payload.time_iso ? new Date(action.payload.time_iso) : null;
-  const start = parsed && !isNaN(parsed.getTime()) ? parsed : new Date(Date.now() + 3_600_000);
+  const start = parsed && !isNaN(parsed.getTime()) && parsed.getTime() > now.getTime() ? parsed : new Date(now.getTime() + 3_600_000);
   const end = new Date(start.getTime() + 15 * 60_000);
   const summary = icsText(action.payload.message || action.title);
-  const ics = [
+  return [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
     "PRODID:-//LifeSync//EN",
     "BEGIN:VEVENT",
     `UID:${crypto.randomUUID()}@lifesync`,
-    `DTSTAMP:${icsDate(new Date())}`,
+    `DTSTAMP:${icsDate(now)}`,
     `DTSTART:${icsDate(start)}`,
     `DTEND:${icsDate(end)}`,
     `SUMMARY:${summary}`,
@@ -42,9 +75,14 @@ export function downloadReminder(action: Action) {
     "END:VALARM",
     "END:VEVENT",
     "END:VCALENDAR",
-  ].join("\r\n");
+  ]
+    .map(foldIcsLine)
+    .join("\r\n");
+}
 
-  const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar" }));
+// Triggers a download of the reminder; nothing is sent anywhere.
+export function downloadReminder(action: Action) {
+  const url = URL.createObjectURL(new Blob([reminderIcs(action)], { type: "text/calendar;charset=utf-8" }));
   const a = document.createElement("a");
   a.href = url;
   a.download = "lifesync-reminder.ics";

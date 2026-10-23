@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useRef, useState } from "react";
 import type { Action } from "@/lib/schema";
 import { downloadReminder, mapsHref, telHref, whatsappHref } from "@/lib/client/actions";
 import { fill, type Dict } from "@/lib/i18n";
@@ -35,6 +35,13 @@ function run(action: Action) {
 export function ActionButton({ action, index }: { action: Action; index: number }) {
   const [confirming, setConfirming] = useState(false);
   const c = useLanguage().t.card;
+  const panelId = useId();
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  // The confirm panel closes after either choice; keep keyboard focus on this action, not the page.
+  const close = () => {
+    setConfirming(false);
+    toggleRef.current?.focus();
+  };
   const Glyph = TYPE_ICON[action.type];
   const isInfo = action.type === "info";
   const isNow = action.urgency === "now";
@@ -77,8 +84,10 @@ export function ActionButton({ action, index }: { action: Action; index: number 
         <div className={rowClass}>{body}</div>
       ) : (
         <button
+          ref={toggleRef}
           type="button"
           aria-expanded={action.needs_confirmation ? confirming : undefined}
+          aria-controls={action.needs_confirmation && confirming ? panelId : undefined}
           onClick={() => (action.needs_confirmation ? setConfirming((c) => !c) : run(action))}
           className={`group ${rowClass} transition-colors hover:bg-cloud`}
         >
@@ -87,7 +96,7 @@ export function ActionButton({ action, index }: { action: Action; index: number 
       )}
 
       {confirming && (
-        <div className="border-t border-hairline bg-cloud px-4 py-4 sm:ps-[72px]" role="group" aria-label={c.confirmGroup}>
+        <div id={panelId} className="border-t border-hairline bg-cloud px-4 py-4 sm:ps-[72px]" role="group" aria-label={c.confirmGroup}>
           <p className="text-caption text-charcoal">{prompt}</p>
           {action.type === "message" && action.payload.message && (
             <p className="mt-2 rounded-badge border border-linen bg-canvas p-3 text-caption text-graphite">
@@ -99,16 +108,16 @@ export function ActionButton({ action, index }: { action: Action; index: number 
               type="button"
               onClick={() => {
                 run(action);
-                setConfirming(false);
+                close();
               }}
-              className="h-10 rounded-full bg-graphite px-5 text-caption font-semibold text-canvas transition-colors hover:bg-graphite-hover"
+              className="h-11 rounded-full bg-graphite px-5 text-caption font-semibold text-canvas transition-colors hover:bg-graphite-hover"
             >
               {confirm}
             </button>
             <button
               type="button"
-              onClick={() => setConfirming(false)}
-              className="h-10 rounded-full px-4 text-caption font-medium text-quiet transition-colors hover:bg-board hover:text-graphite"
+              onClick={close}
+              className="h-11 rounded-full px-4 text-caption font-medium text-quiet transition-colors hover:bg-board hover:text-graphite"
             >
               {c.notNow}
             </button>
